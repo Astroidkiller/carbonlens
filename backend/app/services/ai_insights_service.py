@@ -1,6 +1,7 @@
 import json
 import logging
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 import os
 from typing import Dict, Any
 from ..schemas.insights import InsightsResponse
@@ -10,15 +11,14 @@ from ..core.config import settings
 logger = logging.getLogger(__name__)
 
 api_key = settings.GEMINI_API_KEY
-if api_key and api_key != "PLACEHOLDER_GEMINI_API_KEY":
-    genai.configure(api_key=api_key)
+client = genai.Client(api_key=api_key) if api_key and api_key != "PLACEHOLDER_GEMINI_API_KEY" else None
 
 class AIInsightsService:
     def __init__(self):
-        self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.model_name = 'gemini-2.5-flash'
 
     def generate_insights(self, metrics: Dict[str, Any]) -> dict:
-        if not api_key or api_key == "PLACEHOLDER_GEMINI_API_KEY":
+        if not client:
             logger.error("GEMINI_API_KEY environment variable is missing or invalid.")
             raise ValueError("AI configuration error.")
 
@@ -49,7 +49,7 @@ INSIGHT PRIORITIZATION GUIDELINES:
 
 REQUIRED JSON FORMAT:
 {{
-  "summary": "A 1-2 sentence overview. e.g., 'Transport remains your largest emission source, contributing 63% of your footprint this month.'",
+  "summary": "A 1-2 sentence overview.",
   "insights": [
     {{
       "title": "Short title",
@@ -70,9 +70,10 @@ REQUIRED JSON FORMAT:
 """
 
         try:
-            response = self.model.generate_content(
-                prompt,
-                generation_config=genai.GenerationConfig(
+            response = client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
                     response_mime_type="application/json",
                     temperature=0.2 # Lower temperature for strictly factual explanations
                 )
