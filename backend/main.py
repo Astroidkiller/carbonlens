@@ -51,13 +51,10 @@ import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Configure CORS
-origins = settings.ALLOWED_ORIGINS.split(",")
-
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
+    allow_origins=["*"], # Allow all origins for Vercel
+    allow_credentials=False, # Must be false when using wildcard
     allow_methods=["*"],
     allow_headers=["*"],
 )
