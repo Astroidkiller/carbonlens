@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { activityService } from '../services/activityService';
 import { AlertCircle, CheckCircle2 } from 'lucide-react';
+import { LiquidCard } from '../components/ui/LiquidCard';
+import { LiquidButton } from '../components/ui/LiquidButton';
 
 export const AddActivity: React.FC = () => {
   const navigate = useNavigate();
@@ -69,44 +71,44 @@ export const AddActivity: React.FC = () => {
   return (
     <div className="max-w-2xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900">Log New Activity</h1>
+        <h1 className="text-2xl font-bold text-[var(--text)] tracking-tight">Log New Activity</h1>
       </div>
 
       {error && (
-        <div className="bg-red-50 p-4 rounded-md flex items-center text-red-600">
+        <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl flex items-center text-rose-500">
           <AlertCircle className="mr-3 h-5 w-5 flex-shrink-0" />
-          <p className="text-sm">{typeof error === 'string' ? error : JSON.stringify(error)}</p>
+          <p className="text-sm font-medium">{typeof error === 'string' ? error : JSON.stringify(error)}</p>
         </div>
       )}
 
       {success && (
-        <div className="bg-emerald-50 p-4 rounded-md flex items-center text-emerald-700 border border-emerald-200">
+        <div className="bg-emerald-500/10 p-4 rounded-xl flex items-center text-emerald-500 border border-emerald-500/20">
           <CheckCircle2 className="mr-3 h-5 w-5 flex-shrink-0" />
           <p className="text-sm font-medium">{success}</p>
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <LiquidCard className="overflow-hidden">
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             <div>
-              <label className="block text-sm font-medium text-gray-700">Date</label>
+              <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Date</label>
               <input
                 type="date"
                 name="activity_date"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
+                className="block w-full rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-3 text-[var(--text)] bg-black/20 transition-all"
                 value={formData.activity_date}
                 onChange={handleChange}
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Category</label>
+              <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Category</label>
               <select
                 name="category"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
+                className="block w-full rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-3 text-[var(--text)] bg-black/20 transition-all"
                 value={formData.category}
                 onChange={handleChange}
               >
@@ -117,10 +119,10 @@ export const AddActivity: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700">Activity Type</label>
+              <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Activity Type</label>
               <select
                 name="activity_type"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
+                className="block w-full rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-3 text-[var(--text)] bg-black/20 transition-all"
                 value={formData.activity_type}
                 onChange={handleChange}
               >
@@ -132,7 +134,7 @@ export const AddActivity: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Quantity</label>
+                <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Quantity</label>
                 <input
                   type="number"
                   name="quantity"
@@ -140,16 +142,16 @@ export const AddActivity: React.FC = () => {
                   min="0.01"
                   step="0.01"
                   placeholder="0.00"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
+                  className="block w-full rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-3 text-[var(--text)] bg-black/20 placeholder:text-[var(--text-muted)] transition-all"
                   value={formData.quantity}
                   onChange={handleChange}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Unit</label>
+                <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Unit</label>
                 <select
                   name="unit"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
+                  className="block w-full rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-3 text-[var(--text)] bg-black/20 transition-all"
                   value={formData.unit}
                   onChange={handleChange}
                 >
@@ -161,36 +163,36 @@ export const AddActivity: React.FC = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700">Description (Optional)</label>
+              <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Description (Optional)</label>
               <textarea
                 name="description"
                 rows={3}
                 placeholder="E.g., Commute to work"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
+                className="block w-full rounded-xl shadow-inner sm:text-sm p-4 resize-none bg-black/20 text-[var(--text)] border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] placeholder:text-[var(--text-muted)] transition-all duration-300"
                 value={formData.description}
                 onChange={handleChange}
               />
             </div>
           </div>
 
-          <div className="flex justify-end pt-4 border-t border-gray-100">
+          <div className="flex justify-end pt-4 border-t border-[var(--border)] mt-6">
             <button
               type="button"
               onClick={() => navigate('/activities')}
-              className="mr-3 px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500"
+              className="mr-3 px-4 py-2 border border-[var(--border)] shadow-sm text-sm font-medium rounded-full text-[var(--text-muted)] hover:text-[var(--text)] hover:bg-[var(--surface-strong)] transition-all"
             >
               Cancel
             </button>
-            <button
+            <LiquidButton
               type="submit"
               disabled={loading}
-              className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+              gradient={true}
             >
               {loading ? 'Logging...' : 'Save Activity'}
-            </button>
+            </LiquidButton>
           </div>
         </form>
-      </div>
+      </LiquidCard>
     </div>
   );
 };
