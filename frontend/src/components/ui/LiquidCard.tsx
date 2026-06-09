@@ -12,14 +12,14 @@ export const LiquidCard: React.FC<LiquidCardProps> = ({ children, className = ''
       onClick={onClick}
       className={`
         relative
-        bg-white/60
+        bg-gradient-to-br from-white/60 via-white/20 to-white/5
         backdrop-blur-xl 
         backdrop-saturate-150 
-        border border-white/80
-        shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-2px_6px_rgba(0,0,0,0.05),0_10px_40px_-10px_rgba(0,0,0,0.08)]
+        border-t border-l border-white/90 border-b border-r border-white/20
+        shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),inset_0_-4px_8px_rgba(0,0,0,0.06),0_35px_60px_-15px_rgba(0,0,0,0.2)]
         rounded-[32px]
-        transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)]
-        hover:-translate-y-1 hover:shadow-[0_20px_40px_-10px_rgba(0,0,0,0.12)] hover:bg-white/70
+        transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]
+        hover:-translate-y-4 hover:scale-[1.02] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-4px_8px_rgba(0,0,0,0.06),0_60px_100px_-20px_rgba(0,0,0,0.25)]
         overflow-hidden
         ${className}
       `}
