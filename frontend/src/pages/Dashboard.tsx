@@ -99,30 +99,30 @@ export const Dashboard: React.FC = () => {
   const getTrendColor = (direction: string) => {
     if (direction === 'Improving') return 'text-emerald-500';
     if (direction === 'Increasing') return 'text-rose-500';
-    return 'text-slate-500';
+    return 'text-[var(--text-muted)]';
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-slate-800 drop-shadow-sm tracking-tight">Dashboard Overview</h1>
+        <h1 className="text-3xl font-bold text-[var(--text)] drop-shadow-sm tracking-tight">Dashboard Overview</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Score Card */}
         <LiquidCard className="p-6 flex flex-col items-center justify-center text-center">
-          <p className="text-sm font-semibold text-slate-500 mb-1">Carbon Score</p>
-          <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 mb-2 drop-shadow-sm tracking-tighter">{summary.carbon_score}</div>
-          <p className="text-xs text-slate-400">Target: 100</p>
+          <p className="text-sm font-semibold text-[var(--text-muted)] mb-1">Carbon Score</p>
+          <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-[var(--brand)] to-purple-500 mb-2 drop-shadow-sm tracking-tighter">{summary.carbon_score}</div>
+          <p className="text-xs text-[var(--text-muted)] opacity-80">Target: 100</p>
         </LiquidCard>
 
         {/* Total Emissions */}
         <LiquidCard className="p-6">
-          <div className="flex items-center text-slate-500 mb-2">
-            <Wind className="h-5 w-5 mr-2 text-indigo-400" />
+          <div className="flex items-center text-[var(--text-muted)] mb-2">
+            <Wind className="h-5 w-5 mr-2 text-[var(--brand)]" />
             <h3 className="text-sm font-semibold">Total Emissions</h3>
           </div>
-          <p className="text-3xl font-bold text-slate-800 tracking-tight">{summary.total_emissions.toLocaleString()} <span className="text-lg text-slate-500 font-medium">kg CO₂</span></p>
+          <p className="text-3xl font-bold text-[var(--text)] tracking-tight">{summary.total_emissions.toLocaleString()} <span className="text-lg text-[var(--text-muted)] font-medium">kg CO₂</span></p>
           <div className="mt-4 flex items-center text-sm">
             {getTrendIcon(summary.trend_direction)}
             <span className={`ml-2 font-bold ${getTrendColor(summary.trend_direction)}`}>
@@ -133,23 +133,23 @@ export const Dashboard: React.FC = () => {
 
         {/* Activity Count */}
         <LiquidCard className="p-6">
-          <div className="flex items-center text-slate-500 mb-2">
+          <div className="flex items-center text-[var(--text-muted)] mb-2">
             <Activity className="h-5 w-5 mr-2 text-purple-400" />
             <h3 className="text-sm font-semibold">Logged Activities</h3>
           </div>
-          <p className="text-3xl font-bold text-slate-800 tracking-tight">{summary.activity_count}</p>
-          <div className="mt-4 text-sm font-medium text-slate-500">
+          <p className="text-3xl font-bold text-[var(--text)] tracking-tight">{summary.activity_count}</p>
+          <div className="mt-4 text-sm font-medium text-[var(--text-muted)]">
             Average {summary.average_daily_emissions} kg/day
           </div>
         </LiquidCard>
 
         {/* Highest Category */}
         <LiquidCard className="p-6">
-          <h3 className="text-sm font-semibold text-slate-500 mb-2">Top Contributor</h3>
-          <p className="text-3xl font-bold text-slate-800 capitalize tracking-tight">
+          <h3 className="text-sm font-semibold text-[var(--text-muted)] mb-2">Top Contributor</h3>
+          <p className="text-3xl font-bold text-[var(--text)] capitalize tracking-tight">
             {summary.highest_emission_category || 'N/A'}
           </p>
-          <div className="mt-4 flex items-center text-sm font-medium text-slate-500">
+          <div className="mt-4 flex items-center text-sm font-medium text-[var(--text-muted)]">
             Based on all-time data
           </div>
         </LiquidCard>
@@ -158,7 +158,7 @@ export const Dashboard: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Trend Chart */}
         <LiquidCard className="p-6 lg:col-span-2">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 tracking-tight">Emissions Trend (Last 14 Days)</h3>
+          <h3 className="text-lg font-bold text-[var(--text)] mb-4 tracking-tight">Emissions Trend (Last 14 Days)</h3>
           {trends.daily.length > 0 ? (
             <div className="h-72">
               <Line 
@@ -169,19 +169,19 @@ export const Dashboard: React.FC = () => {
                   scales: { 
                     y: { 
                       beginAtZero: true,
-                      grid: { color: 'rgba(0, 0, 0, 0.05)' },
-                      ticks: { color: 'rgba(71, 85, 105, 0.7)' }
+                      grid: { color: 'var(--border)' },
+                      ticks: { color: 'var(--text-muted)' }
                     },
                     x: {
-                      grid: { color: 'rgba(0, 0, 0, 0.05)' },
-                      ticks: { color: 'rgba(71, 85, 105, 0.7)' }
+                      grid: { color: 'var(--border)' },
+                      ticks: { color: 'var(--text-muted)' }
                     }
                   }
                 }} 
               />
             </div>
           ) : (
-            <div className="h-72 flex items-center justify-center text-slate-400 border-2 border-dashed border-slate-200/50 rounded-[24px]">
+            <div className="h-72 flex items-center justify-center text-[var(--text-muted)] border-2 border-dashed border-[var(--border)] rounded-[24px]">
               No recent activity data to display trends.
             </div>
           )}
@@ -189,7 +189,7 @@ export const Dashboard: React.FC = () => {
 
         {/* Pie Chart */}
         <LiquidCard className="p-6">
-          <h3 className="text-lg font-bold text-slate-800 mb-4 tracking-tight">Category Breakdown</h3>
+          <h3 className="text-lg font-bold text-[var(--text)] mb-4 tracking-tight">Category Breakdown</h3>
           {summary.total_emissions > 0 ? (
             <div className="h-72 flex justify-center">
               <Pie 
@@ -197,13 +197,13 @@ export const Dashboard: React.FC = () => {
                 options={{ 
                   maintainAspectRatio: false,
                   plugins: {
-                    legend: { labels: { color: 'rgba(71, 85, 105, 0.8)' } }
+                    legend: { labels: { color: 'var(--text-muted)' } }
                   }
                 }} 
               />
             </div>
           ) : (
-            <div className="h-72 flex items-center justify-center text-slate-400 border-2 border-dashed border-slate-200/50 rounded-[24px]">
+            <div className="h-72 flex items-center justify-center text-[var(--text-muted)] border-2 border-dashed border-[var(--border)] rounded-[24px]">
               No data
             </div>
           )}
