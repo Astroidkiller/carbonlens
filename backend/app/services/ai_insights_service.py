@@ -9,6 +9,7 @@ from ..core.config import settings
 
 logger = logging.getLogger(__name__)
 
+api_key = settings.GEMINI_API_KEY
 if api_key and api_key != "PLACEHOLDER_GEMINI_API_KEY":
     genai.configure(api_key=api_key)
     is_configured = True
