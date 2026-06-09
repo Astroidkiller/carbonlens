@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { activityService } from '../services/activityService';
 import type { Activity } from '../types';
 import { PlusCircle, Search, Trash2, AlertCircle } from 'lucide-react';
+import { LiquidCard } from '../components/ui/LiquidCard';
+import { LiquidButton } from '../components/ui/LiquidButton';
 
 export const Activities: React.FC = () => {
   const [activities, setActivities] = useState<Activity[]>([]);
@@ -46,7 +48,7 @@ export const Activities: React.FC = () => {
   if (loading) {
     return (
       <div className="flex h-full items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--brand)]"></div>
       </div>
     );
   }
@@ -54,37 +56,36 @@ export const Activities: React.FC = () => {
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">Your Activities</h1>
-        <Link
-          to="/add-activity"
-          className="inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700"
-        >
-          <PlusCircle className="mr-2 h-5 w-5" />
-          Log Activity
+        <h1 className="text-2xl font-bold text-[var(--text)] tracking-tight">Your Activities</h1>
+        <Link to="/add-activity">
+          <LiquidButton className="inline-flex items-center">
+            <PlusCircle className="mr-2 h-5 w-5" />
+            Log Activity
+          </LiquidButton>
         </Link>
       </div>
 
       {error && (
-        <div className="bg-red-50 p-4 rounded-md flex items-center text-red-600">
+        <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-xl flex items-center text-rose-500">
           <AlertCircle className="mr-3 h-5 w-5" />
           {error}
         </div>
       )}
 
-      <div className="bg-white shadow-sm border border-gray-100 rounded-xl overflow-hidden">
-        <div className="p-4 border-b border-gray-100 flex flex-col sm:flex-row gap-4">
+      <LiquidCard className="overflow-hidden">
+        <div className="p-4 border-b border-[var(--border)] flex flex-col sm:flex-row gap-4 bg-[var(--surface-strong)]">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
             <input
               type="text"
               placeholder="Search activities..."
-              className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
+              className="pl-10 w-full rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-2 text-[var(--text)] bg-black/20 placeholder:text-[var(--text-muted)] transition-all"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <select
-            className="rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
+            className="rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-2 text-[var(--text)] bg-black/20 transition-all"
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
           >
@@ -98,45 +99,45 @@ export const Activities: React.FC = () => {
         </div>
 
         {filteredActivities.length === 0 ? (
-          <div className="p-12 text-center text-gray-500">
+          <div className="p-12 text-center text-[var(--text-muted)] bg-black/10">
             <p>No activities found.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-[var(--border)]">
+              <thead className="bg-black/20">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantity</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Emissions</th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">Type</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">Quantity</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">Emissions</th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-[var(--text-muted)] uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-black/10 divide-y divide-[var(--border)]">
                 {filteredActivities.map((act) => (
-                  <tr key={act.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  <tr key={act.id} className="hover:bg-[var(--surface-strong)] transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text)]">
                       {new Date(act.activity_date).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-col">
-                        <span className="text-sm font-medium text-gray-900 capitalize">{act.activity_type}</span>
-                        <span className="text-xs text-gray-500 capitalize">{act.category}</span>
+                        <span className="text-sm font-medium text-[var(--text)] capitalize tracking-tight">{act.activity_type}</span>
+                        <span className="text-xs text-[var(--text-muted)] capitalize">{act.category}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-[var(--text-muted)] font-medium">
                       {act.quantity} {act.unit}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-rose-500/20 text-rose-500 border border-rose-500/30">
                         {act.carbon_emission} kg CO₂
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <button 
                         onClick={() => handleDelete(act.id)}
-                        className="text-red-600 hover:text-red-900 transition-colors"
+                        className="text-[var(--text-muted)] hover:text-rose-500 transition-colors"
                         title="Delete Activity"
                       >
                         <Trash2 className="h-5 w-5" />
@@ -148,7 +149,7 @@ export const Activities: React.FC = () => {
             </table>
           </div>
         )}
-      </div>
+      </LiquidCard>
     </div>
   );
 };

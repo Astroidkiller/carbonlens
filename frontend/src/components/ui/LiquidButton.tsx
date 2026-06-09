@@ -13,9 +13,9 @@ export const LiquidButton: React.FC<LiquidButtonProps> = ({
   ...props 
 }) => {
   const getVariantStyles = () => {
-    if (variant === 'danger') return 'text-rose-600 hover:bg-rose-50/10';
-    if (gradient) return 'text-white bg-gradient-to-r from-[var(--brand)] to-purple-500 border-[var(--border-light)] shadow-md';
-    return 'text-[var(--text)] hover:bg-[var(--border)]';
+    if (variant === 'danger') return 'text-rose-500 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20';
+    if (gradient) return 'text-white bg-[var(--surface-strong)] border-[var(--border-light)] shadow-md hover:bg-white/5';
+    return 'text-[var(--text)] hover:bg-[var(--surface-strong)] border-[var(--border)]';
   };
 
   return (
