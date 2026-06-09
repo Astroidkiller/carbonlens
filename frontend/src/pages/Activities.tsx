@@ -78,13 +78,13 @@ export const Activities: React.FC = () => {
             <input
               type="text"
               placeholder="Search activities..."
-              className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2"
+              className="pl-10 w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
           <select
-            className="rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white"
+            className="rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
           >

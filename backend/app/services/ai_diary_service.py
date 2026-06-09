@@ -62,14 +62,19 @@ class AIDiaryService:
                 act_schema = ActivityCreate(**raw_act)
                 
                 # Perform Carbon Calculation (single source of truth)
-                calc_result = calculate_carbon_emission(act_schema)
+                calc_result = calculate_carbon_emission(
+                    category=act_schema.category,
+                    activity_type=act_schema.activity_type,
+                    quantity=act_schema.quantity,
+                    unit=act_schema.unit
+                )
                 
                 valid_activities.append({
                     "activity": act_schema.model_dump(),
-                    "carbon_emission": calc_result.carbon_emission,
-                    "calculation_explanation": calc_result.explanation
+                    "carbon_emission": calc_result["carbon_emission"],
+                    "calculation_explanation": calc_result["calculation_explanation"]
                 })
-                total_emissions += calc_result.carbon_emission
+                total_emissions += calc_result["carbon_emission"]
                 
             except ValidationError as ve:
                 logger.warning(f"Extracted activity failed Pydantic validation: {raw_act}. Dropping it. Error: {ve}")

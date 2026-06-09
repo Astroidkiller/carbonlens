@@ -96,7 +96,7 @@ export const AddActivity: React.FC = () => {
                 type="date"
                 name="activity_date"
                 required
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
                 value={formData.activity_date}
                 onChange={handleChange}
               />
@@ -106,7 +106,7 @@ export const AddActivity: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700">Category</label>
               <select
                 name="category"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
                 value={formData.category}
                 onChange={handleChange}
               >
@@ -120,7 +120,7 @@ export const AddActivity: React.FC = () => {
               <label className="block text-sm font-medium text-gray-700">Activity Type</label>
               <select
                 name="activity_type"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
                 value={formData.activity_type}
                 onChange={handleChange}
               >
@@ -140,7 +140,7 @@ export const AddActivity: React.FC = () => {
                   min="0.01"
                   step="0.01"
                   placeholder="0.00"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
                   value={formData.quantity}
                   onChange={handleChange}
                 />
@@ -149,7 +149,7 @@ export const AddActivity: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700">Unit</label>
                 <select
                   name="unit"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 bg-white text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
                   value={formData.unit}
                   onChange={handleChange}
                 >
@@ -166,7 +166,7 @@ export const AddActivity: React.FC = () => {
                 name="description"
                 rows={3}
                 placeholder="E.g., Commute to work"
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-2 text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
                 value={formData.description}
                 onChange={handleChange}
               />

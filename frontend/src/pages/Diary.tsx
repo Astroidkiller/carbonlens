@@ -106,7 +106,7 @@ export const Diary: React.FC = () => {
           <textarea
             rows={5}
             placeholder="e.g., Today I drove 15 km to college, ate a chicken biryani for lunch, used about 5 kWh of electricity, and bought a T-shirt."
-            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-4 bg-gray-50 resize-none"
+            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-4 bg-gray-50 resize-none text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
             value={text}
             onChange={(e) => setText(e.target.value)}
             disabled={loading || saving}
