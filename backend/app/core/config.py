@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     # AI Service
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "PLACEHOLDER_GEMINI_API_KEY")
 
+    # CORS
+    ALLOWED_ORIGINS: str = os.getenv("ALLOWED_ORIGINS", "*")
+
     class Config:
         env_file = ".env"
 
