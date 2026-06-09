@@ -81,3 +81,7 @@ def health_check():
     Returns a healthy status to verify the API is running for production platforms (Render).
     """
     return {"status": "healthy"}
+
+@app.get("/")
+def root():
+    return {"status": "healthy", "message": "CarbonLens API is running successfully"}
