@@ -1,4 +1,4 @@
-export default function Settings() {
+export const Settings = () => {
   return (
     <div className="max-w-5xl mx-auto space-y-6">
       <div className="mb-6">

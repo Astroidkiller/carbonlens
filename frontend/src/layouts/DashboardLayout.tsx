@@ -12,7 +12,7 @@ export const DashboardLayout: React.FC = () => {
     { name: 'Activities', path: '/activities', icon: List },
     { name: 'Log Activity', path: '/add-activity', icon: PlusCircle },
     { name: 'AI Diary', path: '/diary', icon: Bot },
-    { name: 'Insights', path: '/insights', icon: Lightbulb },
+    { name: 'AI Insights', path: '/insights', icon: Lightbulb },
   ];
 
   return (

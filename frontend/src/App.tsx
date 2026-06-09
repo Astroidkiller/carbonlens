@@ -9,6 +9,7 @@ import { Activities } from './pages/Activities';
 import { AddActivity } from './pages/AddActivity';
 import { Diary } from './pages/Diary';
 import { Insights } from './pages/Insights';
+import { Settings } from './pages/Settings';
 
 const App: React.FC = () => {
   return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
           <Route path="/add-activity" element={<AddActivity />} />
           <Route path="/diary" element={<Diary />} />
           <Route path="/insights" element={<Insights />} />
+          <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>
       

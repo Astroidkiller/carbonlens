@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.openapi.docs import get_swagger_ui_html
 import os
 from .core.config import settings
-from .api.routes import auth, activities, dashboard
+from .api.routes import auth, activities, dashboard, insights
 
 tags_metadata = [
     {
@@ -73,7 +73,7 @@ app.add_middleware(
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
 app.include_router(activities.router, prefix=f"{settings.API_V1_STR}/activities", tags=["activities"])
 app.include_router(dashboard.router, prefix=f"{settings.API_V1_STR}/dashboard", tags=["dashboard"])
-
+app.include_router(insights.router, prefix=f"{settings.API_V1_STR}/insights", tags=["insights"])
 
 @app.get("/health", summary="Health Check", tags=["health"])
 def health_check():

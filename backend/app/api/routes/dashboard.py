@@ -9,6 +9,8 @@ from ...schemas.dashboard import (
 )
 from ..deps import get_current_user
 from ...services import dashboard_service
+from ...services.insights_service import insights_service
+from ...schemas.insights import InsightsResponse
 
 router = APIRouter()
 
@@ -56,3 +58,18 @@ def get_top_contributors(db: Session = Depends(get_db), current_user: User = Dep
 )
 def get_insights_data(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     return dashboard_service.get_dashboard_insights_data(db, current_user.id)
+
+@router.get(
+    "/ai-insights",
+    response_model=InsightsResponse,
+    summary="Get AI Insights",
+    description="Returns AI-generated insights based on the user's carbon metrics."
+)
+def get_insights(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+    try:
+        data = insights_service.get_insights(db, current_user.id)
+        return InsightsResponse(**data)
+    except Exception as e:
+        from fastapi import HTTPException, status
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
