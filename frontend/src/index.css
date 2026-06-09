@@ -57,7 +57,7 @@ body.light {
   body {
     background-color: var(--bg);
     color: var(--text);
-    @apply font-sans tracking-tight antialiased selection:bg-brand selection:text-white transition-colors duration-500 ease-in-out;
+    @apply font-sans tracking-tight antialiased selection:bg-[var(--brand)] selection:text-white transition-colors duration-500 ease-in-out;
   }
 }
 
