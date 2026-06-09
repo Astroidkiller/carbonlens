@@ -4,7 +4,7 @@ import type { DashboardSummary, DashboardCategories, DashboardTrends } from '../
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title } from 'chart.js';
 import { Pie, Line } from 'react-chartjs-2';
 import { TrendingDown, TrendingUp, Minus, Activity, Wind, AlertCircle } from 'lucide-react';
-import { GlassCard } from '../components/ui/GlassCard';
+import { LiquidCard } from '../components/ui/LiquidCard';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title);
 
@@ -45,10 +45,10 @@ export const Dashboard: React.FC = () => {
 
   if (error || !summary || !categories || !trends) {
     return (
-      <GlassCard className="p-6 flex items-center text-red-400">
+      <LiquidCard className="p-6 flex items-center text-rose-500 bg-rose-50/50">
         <AlertCircle className="mr-3 h-6 w-6" />
         {error || 'Unable to load dashboard data'}
-      </GlassCard>
+      </LiquidCard>
     );
   }
 
@@ -64,14 +64,14 @@ export const Dashboard: React.FC = () => {
           categories.waste
         ],
         backgroundColor: [
-          '#10b981', // emerald-500
-          '#f59e0b', // amber-500
-          '#3b82f6', // blue-500
-          '#8b5cf6', // violet-500
-          '#ef4444', // red-500
+          '#6366f1', // indigo-500
+          '#a855f7', // purple-500
+          '#ec4899', // pink-500
+          '#14b8a6', // teal-500
+          '#f43f5e', // rose-500
         ],
-        borderWidth: 1,
-        borderColor: 'rgba(255, 255, 255, 0.1)',
+        borderWidth: 2,
+        borderColor: '#ffffff',
       },
     ],
   };
@@ -97,68 +97,68 @@ export const Dashboard: React.FC = () => {
   };
 
   const getTrendColor = (direction: string) => {
-    if (direction === 'Improving') return 'text-[#c0c5d7]';
-    if (direction === 'Increasing') return 'text-red-400';
-    return 'text-[#aab1c6]';
+    if (direction === 'Improving') return 'text-emerald-500';
+    if (direction === 'Increasing') return 'text-rose-500';
+    return 'text-slate-500';
   };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-[#f5f5f7] drop-shadow-md tracking-tight">Dashboard Overview</h1>
+        <h1 className="text-3xl font-bold text-slate-800 drop-shadow-sm tracking-tight">Dashboard Overview</h1>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Score Card */}
-        <GlassCard className="p-6 flex flex-col items-center justify-center text-center">
-          <p className="text-sm font-medium text-[#aab1c6] mb-1">Carbon Score</p>
-          <div className="text-5xl font-black text-[#c0c5d7] mb-2 drop-shadow-md tracking-tighter">{summary.carbon_score}</div>
-          <p className="text-xs text-[#aab1c6]/70">Target: 100</p>
-        </GlassCard>
+        <LiquidCard className="p-6 flex flex-col items-center justify-center text-center">
+          <p className="text-sm font-semibold text-slate-500 mb-1">Carbon Score</p>
+          <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500 mb-2 drop-shadow-sm tracking-tighter">{summary.carbon_score}</div>
+          <p className="text-xs text-slate-400">Target: 100</p>
+        </LiquidCard>
 
         {/* Total Emissions */}
-        <GlassCard className="p-6">
-          <div className="flex items-center text-[#aab1c6] mb-2">
-            <Wind className="h-5 w-5 mr-2" />
-            <h3 className="text-sm font-medium">Total Emissions</h3>
+        <LiquidCard className="p-6">
+          <div className="flex items-center text-slate-500 mb-2">
+            <Wind className="h-5 w-5 mr-2 text-indigo-400" />
+            <h3 className="text-sm font-semibold">Total Emissions</h3>
           </div>
-          <p className="text-3xl font-bold text-[#f5f5f7] tracking-tight">{summary.total_emissions.toLocaleString()} <span className="text-lg text-[#aab1c6] font-normal">kg CO₂</span></p>
+          <p className="text-3xl font-bold text-slate-800 tracking-tight">{summary.total_emissions.toLocaleString()} <span className="text-lg text-slate-500 font-medium">kg CO₂</span></p>
           <div className="mt-4 flex items-center text-sm">
             {getTrendIcon(summary.trend_direction)}
-            <span className={`ml-2 font-medium ${getTrendColor(summary.trend_direction)}`}>
+            <span className={`ml-2 font-bold ${getTrendColor(summary.trend_direction)}`}>
               {Math.abs(summary.monthly_change_percent)}% this month
             </span>
           </div>
-        </GlassCard>
+        </LiquidCard>
 
         {/* Activity Count */}
-        <GlassCard className="p-6">
-          <div className="flex items-center text-[#aab1c6] mb-2">
-            <Activity className="h-5 w-5 mr-2" />
-            <h3 className="text-sm font-medium">Logged Activities</h3>
+        <LiquidCard className="p-6">
+          <div className="flex items-center text-slate-500 mb-2">
+            <Activity className="h-5 w-5 mr-2 text-purple-400" />
+            <h3 className="text-sm font-semibold">Logged Activities</h3>
           </div>
-          <p className="text-3xl font-bold text-[#f5f5f7] tracking-tight">{summary.activity_count}</p>
-          <div className="mt-4 text-sm text-[#aab1c6]">
+          <p className="text-3xl font-bold text-slate-800 tracking-tight">{summary.activity_count}</p>
+          <div className="mt-4 text-sm font-medium text-slate-500">
             Average {summary.average_daily_emissions} kg/day
           </div>
-        </GlassCard>
+        </LiquidCard>
 
         {/* Highest Category */}
-        <GlassCard className="p-6">
-          <h3 className="text-sm font-medium text-[#aab1c6] mb-2">Top Contributor</h3>
-          <p className="text-3xl font-bold text-[#f5f5f7] capitalize tracking-tight">
+        <LiquidCard className="p-6">
+          <h3 className="text-sm font-semibold text-slate-500 mb-2">Top Contributor</h3>
+          <p className="text-3xl font-bold text-slate-800 capitalize tracking-tight">
             {summary.highest_emission_category || 'N/A'}
           </p>
-          <div className="mt-4 flex items-center text-sm text-[#aab1c6]">
+          <div className="mt-4 flex items-center text-sm font-medium text-slate-500">
             Based on all-time data
           </div>
-        </GlassCard>
+        </LiquidCard>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Trend Chart */}
-        <GlassCard className="p-6 lg:col-span-2">
-          <h3 className="text-lg font-bold text-[#f5f5f7] mb-4 tracking-tight">Emissions Trend (Last 14 Days)</h3>
+        <LiquidCard className="p-6 lg:col-span-2">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 tracking-tight">Emissions Trend (Last 14 Days)</h3>
           {trends.daily.length > 0 ? (
             <div className="h-72">
               <Line 
@@ -169,27 +169,27 @@ export const Dashboard: React.FC = () => {
                   scales: { 
                     y: { 
                       beginAtZero: true,
-                      grid: { color: 'rgba(192, 197, 215, 0.05)' },
-                      ticks: { color: 'rgba(170, 177, 198, 0.7)' }
+                      grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                      ticks: { color: 'rgba(71, 85, 105, 0.7)' }
                     },
                     x: {
-                      grid: { color: 'rgba(192, 197, 215, 0.05)' },
-                      ticks: { color: 'rgba(170, 177, 198, 0.7)' }
+                      grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                      ticks: { color: 'rgba(71, 85, 105, 0.7)' }
                     }
                   }
                 }} 
               />
             </div>
           ) : (
-            <div className="h-72 flex items-center justify-center text-[#aab1c6] border-2 border-dashed border-[#c0c5d7]/10 rounded-[24px]">
+            <div className="h-72 flex items-center justify-center text-slate-400 border-2 border-dashed border-slate-200/50 rounded-[24px]">
               No recent activity data to display trends.
             </div>
           )}
-        </GlassCard>
+        </LiquidCard>
 
         {/* Pie Chart */}
-        <GlassCard className="p-6">
-          <h3 className="text-lg font-bold text-[#f5f5f7] mb-4 tracking-tight">Category Breakdown</h3>
+        <LiquidCard className="p-6">
+          <h3 className="text-lg font-bold text-slate-800 mb-4 tracking-tight">Category Breakdown</h3>
           {summary.total_emissions > 0 ? (
             <div className="h-72 flex justify-center">
               <Pie 
@@ -197,17 +197,17 @@ export const Dashboard: React.FC = () => {
                 options={{ 
                   maintainAspectRatio: false,
                   plugins: {
-                    legend: { labels: { color: 'rgba(245, 245, 247, 0.8)' } }
+                    legend: { labels: { color: 'rgba(71, 85, 105, 0.8)' } }
                   }
                 }} 
               />
             </div>
           ) : (
-            <div className="h-72 flex items-center justify-center text-[#aab1c6] border-2 border-dashed border-[#c0c5d7]/10 rounded-[24px]">
+            <div className="h-72 flex items-center justify-center text-slate-400 border-2 border-dashed border-slate-200/50 rounded-[24px]">
               No data
             </div>
           )}
-        </GlassCard>
+        </LiquidCard>
       </div>
     </div>
   );
