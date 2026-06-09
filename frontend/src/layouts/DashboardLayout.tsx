@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { LiquidCard } from '../components/ui/LiquidCard';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, List, PlusCircle, Lightbulb, LogOut, Leaf, Bot, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, List, PlusCircle, Lightbulb, LogOut, Leaf, Bot } from 'lucide-react';
 
 export const DashboardLayout: React.FC = () => {
   const { logout, user } = useAuth();
@@ -16,18 +16,6 @@ export const DashboardLayout: React.FC = () => {
     { name: 'AI Insights', path: '/insights', icon: Lightbulb },
   ];
 
-  const [isLight, setIsLight] = useState(() => document.body.classList.contains('light'));
-
-  const toggleTheme = () => {
-    setIsLight(!isLight);
-    document.body.classList.toggle('light');
-  };
-
-  useEffect(() => {
-    // Sync state if it changes outside
-    setIsLight(document.body.classList.contains('light'));
-  }, []);
-
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col md:flex-row">
       {/* Dynamic Background Noise is applied via body::before in index.css */}
@@ -35,14 +23,9 @@ export const DashboardLayout: React.FC = () => {
       {/* Sidebar - Docked Panel */}
       <div className="w-full md:w-64 flex-shrink-0 p-4 md:p-6 z-10">
         <LiquidCard className="h-full flex flex-col">
-          <div className="flex items-center justify-between h-16 border-b border-[var(--border)] px-4">
-            <div className="flex items-center">
-              <Leaf className="h-6 w-6 text-[var(--brand)] mr-2 drop-shadow-sm" />
-              <span className="text-xl font-bold text-[var(--text)] tracking-tight">CarbonLens</span>
-            </div>
-            <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-[var(--border)] text-[var(--text-muted)] transition-colors">
-              {isLight ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
-            </button>
+          <div className="flex items-center justify-center h-16 border-b border-[var(--border)] px-4">
+            <Leaf className="h-6 w-6 text-[var(--brand)] mr-2 drop-shadow-sm" />
+            <span className="text-xl font-bold text-[var(--text)] tracking-tight">CarbonLens</span>
           </div>
           
           <div className="p-4 border-b border-[var(--border)] bg-[var(--surface-strong)]">
