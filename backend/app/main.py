@@ -1,0 +1,82 @@
+from fastapi import FastAPI
+from fastapi.openapi.docs import get_swagger_ui_html
+from .core.config import settings
+from .api.routes import auth, activities, dashboard
+
+tags_metadata = [
+    {
+        "name": "auth",
+        "description": "Authentication and user management operations. Includes login, registration, and profile retrieval.",
+    },
+    {
+        "name": "activities",
+        "description": "Manage user carbon activities. Supports manual logging and AI-powered natural language diary parsing.",
+    },
+]
+
+app = FastAPI(
+    title="CarbonLens API",
+    description="""
+    **CarbonLens** is an AI-powered personal carbon footprint tracker. 🌿
+    
+    ## Features
+    * **AI Diary**: Log activities using natural language.
+    * **Carbon Calculation**: Accurate emissions tracking.
+    * **Insights**: Personalized sustainability recommendations.
+    """,
+    version="1.0.0",
+    openapi_tags=tags_metadata,
+    docs_url=None, # Disable default docs to inject custom UI below
+    debug=os.getenv("DEBUG", "False").lower() == "true",
+)
+
+@app.get("/docs", include_in_schema=False)
+async def custom_swagger_ui_html():
+    return get_swagger_ui_html(
+        openapi_url=app.openapi_url,
+        title="CarbonLens API - Swagger UI",
+        oauth2_redirect_url=app.swagger_ui_oauth2_redirect_url,
+        swagger_ui_parameters={"defaultModelsExpandDepth": -1},
+        swagger_favicon_url="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/leaf.svg"
+    )
+
+from fastapi.responses import JSONResponse
+import traceback
+import logging
+from fastapi.middleware.cors import CORSMiddleware
+import os
+
+# Configure production logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Configure CORS
+origins = os.environ.get("ALLOWED_ORIGINS", "*").split(",")
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+@app.middleware("http")
+async def catch_exceptions_middleware(request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        logger.error(f"Internal Server Error: {str(e)}", exc_info=True)
+        return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
+
+app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
+app.include_router(activities.router, prefix=f"{settings.API_V1_STR}/activities", tags=["activities"])
+app.include_router(dashboard.router, prefix=f"{settings.API_V1_STR}/dashboard", tags=["dashboard"])
+
+
+@app.get("/health", summary="Health Check", tags=["health"])
+def health_check():
+    """
+    Returns a healthy status to verify the API is running for production platforms (Render).
+    """
+    return {"status": "healthy"}
