@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { activityService } from '../services/activityService';
 import { Bot, Sparkles, CheckCircle2, AlertCircle, X, ArrowRight } from 'lucide-react';
+import { GlassCard } from '../components/ui/GlassCard';
 
 export const Diary: React.FC = () => {
   const [text, setText] = useState('');
@@ -74,11 +75,11 @@ export const Diary: React.FC = () => {
     <div className="max-w-3xl mx-auto space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <Sparkles className="h-6 w-6 text-emerald-500 mr-2" />
+          <h1 className="text-3xl font-bold text-[#f5f5f7] drop-shadow-md tracking-tight flex items-center">
+            <Sparkles className="h-6 w-6 text-[#c0c5d7] mr-2" />
             AI Carbon Diary
           </h1>
-          <p className="text-gray-500 mt-1">
+          <p className="text-[#aab1c6] mt-1 tracking-tight">
             Describe your day naturally. Our Hybrid AI will extract your footprint.
           </p>
         </div>
@@ -98,15 +99,15 @@ export const Diary: React.FC = () => {
         </div>
       )}
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <GlassCard className="overflow-hidden">
         <div className="p-6">
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-[#f5f5f7] mb-2 tracking-tight">
             How was your day?
           </label>
           <textarea
             rows={5}
             placeholder="e.g., Today I drove 15 km to college, ate a chicken biryani for lunch, used about 5 kWh of electricity, and bought a T-shirt."
-            className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm border p-4 bg-gray-50 resize-none text-gray-900 bg-white dark:bg-gray-800 dark:text-white dark:border-gray-600 "
+            className="block w-full rounded-2xl shadow-inner sm:text-sm p-4 resize-none bg-black/20 text-[#f5f5f7] border-0 outline-none ring-0 focus:ring-1 focus:ring-[#c0c5d7]/40 placeholder:text-[#aab1c6]/50 transition-all"
             value={text}
             onChange={(e) => setText(e.target.value)}
             disabled={loading || saving}
@@ -115,7 +116,7 @@ export const Diary: React.FC = () => {
             <button
               onClick={handleExtract}
               disabled={loading || !text.trim()}
-              className={`inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 ${loading || !text.trim() ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`inline-flex items-center px-4 py-2 border border-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.2)] text-sm font-medium rounded-full text-[#f5f5f7] bg-white/10 hover:bg-white/20 focus:outline-none transition-all ${loading || !text.trim() ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {loading ? (
                 <>
@@ -131,36 +132,36 @@ export const Diary: React.FC = () => {
             </button>
           </div>
         </div>
-      </div>
+      </GlassCard>
 
       {previewData && previewData.activities.length > 0 && (
-        <div className="bg-emerald-50/50 rounded-xl shadow-sm border border-emerald-100 overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
-          <div className="p-4 border-b border-emerald-100 bg-white flex items-center justify-between">
-            <h3 className="text-lg font-bold text-gray-900">Extracted Activities</h3>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800">
+        <GlassCard className="overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
+          <div className="p-4 border-b border-white/10 flex items-center justify-between">
+            <h3 className="text-lg font-bold text-[#f5f5f7] tracking-tight">Extracted Activities</h3>
+            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-white/10 text-[#c0c5d7] border border-white/5">
               {previewData.extraction_method === 'gemini' ? 'Gemini AI' : 'Rule Engine'}
             </span>
           </div>
           
           <div className="p-4 space-y-3">
             {previewData.activities.map((item: any, idx: number) => (
-              <div key={idx} className="bg-white p-4 rounded-lg shadow-sm border border-gray-100 flex items-start justify-between group">
+              <div key={idx} className="bg-black/20 p-4 rounded-[24px] shadow-inner border border-white/5 flex items-start justify-between group">
                 <div>
                   <div className="flex items-center">
-                    <span className="font-semibold text-gray-900 capitalize">{item.activity.activity_type}</span>
-                    <span className="mx-2 text-gray-300">•</span>
-                    <span className="text-sm text-gray-500">{item.activity.quantity} {item.activity.unit}</span>
+                    <span className="font-semibold text-[#f5f5f7] capitalize">{item.activity.activity_type}</span>
+                    <span className="mx-2 text-white/30">•</span>
+                    <span className="text-sm text-[#aab1c6]">{item.activity.quantity} {item.activity.unit}</span>
                   </div>
-                  <p className="text-xs text-gray-400 mt-1 capitalize">Category: {item.activity.category}</p>
+                  <p className="text-xs text-[#aab1c6]/70 mt-1 capitalize">Category: {item.activity.category}</p>
                 </div>
                 <div className="flex items-center space-x-4">
                   <div className="text-right">
-                    <span className="block font-bold text-red-600">{item.carbon_emission.toFixed(2)} kg CO₂</span>
-                    <span className="block text-[10px] text-gray-400">{item.calculation_explanation}</span>
+                    <span className="block font-bold text-red-400">{item.carbon_emission.toFixed(2)} kg CO₂</span>
+                    <span className="block text-[10px] text-[#aab1c6]/50">{item.calculation_explanation}</span>
                   </div>
                   <button 
                     onClick={() => removeActivityFromPreview(idx)}
-                    className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="text-[#aab1c6] hover:text-red-400 opacity-0 group-hover:opacity-100 transition-opacity"
                     title="Remove item"
                   >
                     <X className="h-5 w-5" />
@@ -170,21 +171,21 @@ export const Diary: React.FC = () => {
             ))}
           </div>
 
-          <div className="p-4 bg-white border-t border-emerald-100 flex items-center justify-between">
+          <div className="p-4 bg-black/10 border-t border-white/10 flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-500">Total estimated impact</p>
-              <p className="text-xl font-black text-red-600">{previewData.total_carbon_emission} kg CO₂</p>
+              <p className="text-sm text-[#aab1c6]">Total estimated impact</p>
+              <p className="text-xl font-black text-red-400">{previewData.total_carbon_emission} kg CO₂</p>
             </div>
             <button
               onClick={handleConfirm}
               disabled={saving || previewData.activities.length === 0}
-              className={`inline-flex items-center px-6 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 ${saving || previewData.activities.length === 0 ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`inline-flex items-center px-6 py-2 border border-white/10 shadow-[0_4px_12px_rgba(0,0,0,0.2)] text-sm font-medium rounded-full text-[#f5f5f7] bg-white/10 hover:bg-white/20 transition-all ${saving || previewData.activities.length === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
             >
               {saving ? 'Saving...' : 'Confirm & Save'}
               {!saving && <ArrowRight className="ml-2 h-4 w-4" />}
             </button>
           </div>
-        </div>
+        </GlassCard>
       )}
       
       {previewData && previewData.activities.length === 0 && (

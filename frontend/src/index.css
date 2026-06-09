@@ -24,7 +24,7 @@
 
 @layer base {
   body {
-    @apply bg-slate-950 text-slate-100 font-sans antialiased selection:bg-emerald-500 selection:text-white;
+    @apply bg-[#18122a] text-[#f5f5f7] font-sans tracking-tight antialiased selection:bg-white/20 selection:text-white;
   }
 }
 

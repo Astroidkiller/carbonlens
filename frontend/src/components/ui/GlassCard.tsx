@@ -11,12 +11,12 @@ export const GlassCard: React.FC<GlassCardProps> = ({ children, className = '', 
     <div
       onClick={onClick}
       className={`
-        bg-white/10 
-        backdrop-blur-lg 
+        bg-[#c0c5d7]/10
+        backdrop-blur-2xl 
         backdrop-saturate-150 
-        border border-white/10 
-        shadow-2xl shadow-black/40 
-        rounded-2xl 
+        border border-[#d6d7e1]/20 
+        shadow-[0_8px_32px_rgba(0,0,0,0.2)] 
+        rounded-[32px] 
         ${className}
       `}
     >
