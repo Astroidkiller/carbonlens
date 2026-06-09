@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.openapi.docs import get_swagger_ui_html
+import os
 from .core.config import settings
 from .api.routes import auth, activities, dashboard
 
