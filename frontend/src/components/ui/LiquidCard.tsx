@@ -18,8 +18,8 @@ export const LiquidCard: React.FC<LiquidCardProps> = ({ children, className = ''
         border-t border-l border-white/90 border-b border-r border-white/20
         shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),inset_0_-4px_8px_rgba(0,0,0,0.06),0_35px_60px_-15px_rgba(0,0,0,0.2)]
         rounded-[32px]
-        transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]
-        hover:-translate-y-4 hover:scale-[1.02] hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-4px_8px_rgba(0,0,0,0.06),0_60px_100px_-20px_rgba(0,0,0,0.25)]
+        transition-all duration-300 ease-out
+        hover:-translate-y-1 hover:shadow-[inset_0_2px_4px_rgba(255,255,255,0.9),inset_0_-4px_8px_rgba(0,0,0,0.06),0_40px_70px_-15px_rgba(0,0,0,0.2)]
         overflow-hidden
         ${className}
       `}
