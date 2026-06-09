@@ -29,6 +29,53 @@ def extract_activities(
         raise HTTPException(status_code=400, detail=str(e))
 
 @router.post(
+    "/diary",
+    response_model=List[ActivityOut],
+    status_code=status.HTTP_201_CREATED,
+    summary="Extract and save activities from natural language",
+    description="Uses the Gemini Structured Output to extract carbon activities and immediately saves them."
+)
+def extract_and_save_diary(
+    request: DiaryExtractRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    try:
+        # Extract and calculate
+        extraction_result = ai_diary_service.extract_and_calculate(request.text)
+        
+        saved_activities = []
+        total_new_emissions = 0.0
+        
+        # Loop through extracted activities and save them
+        for item in extraction_result["activities"]:
+            activity_data = item["activity"]
+            
+            activity = Activity(
+                **activity_data,
+                user_id=current_user.id,
+                carbon_emission=item["carbon_emission"],
+                calculation_explanation=item["calculation_explanation"]
+            )
+            db.add(activity)
+            saved_activities.append(activity)
+            total_new_emissions += activity.carbon_emission
+            
+        # Update user's total carbon score
+        current_user.current_carbon_score = (current_user.current_carbon_score or 0.0) + total_new_emissions
+        db.commit()
+        
+        for a in saved_activities:
+            db.refresh(a)
+            
+        return saved_activities
+        
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"Failed to process diary: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=f"AI failed to extract valid data: {str(e)}")
+
+@router.post(
     "/bulk",
     response_model=List[ActivityOut],
     status_code=status.HTTP_201_CREATED,

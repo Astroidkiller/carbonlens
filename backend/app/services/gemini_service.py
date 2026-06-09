@@ -1,6 +1,8 @@
 import os
 import json
-import google.generativeai as genai
+from google import genai
+from google.genai import types
+from pydantic import BaseModel, Field
 from typing import List, Dict, Any
 import logging
 
@@ -8,61 +10,50 @@ logger = logging.getLogger(__name__)
 
 # Configure API key safely from environment variable
 api_key = os.environ.get("GEMINI_API_KEY", "")
-if api_key:
-    genai.configure(api_key=api_key)
+client = genai.Client(api_key=api_key) if api_key else None
+
+class ExtractedActivity(BaseModel):
+    category: str = Field(description="Must strictly be one of: 'transport', 'electricity', 'food', 'shopping', 'waste'")
+    activity_type: str = Field(description="The specific type. E.g. 'car', 'motorcycle', 'bus', 'train', 'bicycle' for transport, 'beef meal', 'chicken meal', 'vegetarian meal' for food, 'plastic waste', 'paper waste' for waste, 'clothing item', 'electronics item' for shopping, or 'generic' for electricity.")
+    quantity: float = Field(default=1.0, description="If a quantity is missing, default to 1.")
+    unit: str = Field(description="If units are missing, intelligently infer them (e.g., 'biking' implies distance in 'km', 'chicken' implies 'kg' or 'meal').")
+    description: str = Field(description="Brief description of the activity")
+
+class ExtractionResult(BaseModel):
+    activities: List[ExtractedActivity]
 
 class GeminiService:
     def __init__(self):
-        # We use gemini-2.5-flash as it's the required model and highly cost-efficient
-        self.model = genai.GenerativeModel('gemini-2.5-flash')
+        self.model_name = 'gemini-2.5-flash'
         
     def extract_activities(self, text: str) -> List[Dict[str, Any]]:
-        if not api_key:
+        if not client:
             logger.error("GEMINI_API_KEY environment variable is missing.")
             raise ValueError("AI configuration error.")
 
         prompt = f"""
-You are a strict data extraction system for a carbon footprint tracker.
-Your job is to read the user's diary entry and extract the activities they performed into a structured JSON format.
+You are a data extraction engine.
+Your job is to read the user's diary entry and extract the activities they performed.
 
 RULES:
-1. ONLY return a JSON object with a key 'activities' containing a list of extracted activities.
-2. DO NOT include any conversational text, markdown formatting, or explanations. Just raw JSON.
-3. Supported categories and activity types:
-   - transport: car, motorcycle, bus, train, bicycle
-   - electricity: generic
-   - food: beef meal, chicken meal, vegetarian meal
-   - shopping: clothing item, electronics item
-   - waste: plastic waste, paper waste
-4. You must normalize the text to match ONLY the supported types above.
-   Example: 'chicken biryani' -> category: 'food', activity_type: 'chicken meal'
-   Example: 'drove my suv' -> category: 'transport', activity_type: 'car'
-5. If an activity is completely unsupported (e.g. 'flew in an airplane'), DO NOT include it in the JSON array.
-6. Units should be appropriate (km, miles, kWh, meal, item, kg, grams, lbs).
+1. Ignore conversational filler (e.g., 'I was tired today').
+2. If units are missing, intelligently infer them (e.g., 'biking' implies distance in 'km', 'chicken' implies 'kg' or 'serving').
+3. If a quantity is missing, default to 1.
+4. Never return markdown formatting or conversational text; return only the JSON.
 
 DIARY TEXT:
 "{text}"
-
-EXPECTED JSON FORMAT:
-{{
-  "activities": [
-    {{
-      "category": "transport",
-      "activity_type": "car",
-      "quantity": 15,
-      "unit": "km"
-    }}
-  ]
-}}
 """
 
         try:
-            # Setting response_mime_type forces Gemini to return strict JSON
-            response = self.model.generate_content(
-                prompt,
-                generation_config=genai.GenerationConfig(
-                    response_mime_type="application/json"
-                )
+            response = client.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    response_mime_type="application/json",
+                    response_schema=ExtractionResult,
+                    temperature=0.1
+                ),
             )
             
             raw_json = response.text
