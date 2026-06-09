@@ -12,7 +12,7 @@ export const LiquidCard: React.FC<LiquidCardProps> = ({ children, className = ''
       onClick={onClick}
       className={`
         relative
-        bg-gradient-to-br from-white/60 via-white/20 to-white/5
+        bg-white/60
         backdrop-blur-xl 
         backdrop-saturate-150 
         border-t border-l border-white/90 border-b border-r border-white/20

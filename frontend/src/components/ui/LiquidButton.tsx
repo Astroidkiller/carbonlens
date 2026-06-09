@@ -25,7 +25,7 @@ export const LiquidButton: React.FC<LiquidButtonProps> = ({
         relative overflow-hidden
         px-6 py-2.5 font-medium text-sm
         rounded-full
-        bg-gradient-to-br from-white/60 via-white/20 to-white/5
+        bg-white/60
         backdrop-blur-xl backdrop-saturate-150
         border-t border-l border-white/90 border-b border-r border-white/20
         shadow-[inset_0_2px_4px_rgba(255,255,255,0.8),inset_0_-4px_8px_rgba(0,0,0,0.06),0_15px_30px_-10px_rgba(0,0,0,0.15)]
