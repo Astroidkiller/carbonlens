@@ -1,7 +1,6 @@
 import json
 import logging
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 import os
 from typing import Dict, Any
 from ..schemas.insights import InsightsResponse
@@ -10,15 +9,18 @@ from ..core.config import settings
 
 logger = logging.getLogger(__name__)
 
-api_key = settings.GEMINI_API_KEY
-client = genai.Client(api_key=api_key) if api_key and api_key != "PLACEHOLDER_GEMINI_API_KEY" else None
+if api_key and api_key != "PLACEHOLDER_GEMINI_API_KEY":
+    genai.configure(api_key=api_key)
+    is_configured = True
+else:
+    is_configured = False
 
 class AIInsightsService:
     def __init__(self):
         self.model_name = 'gemini-2.5-flash'
 
     def generate_insights(self, metrics: Dict[str, Any]) -> dict:
-        if not client:
+        if not is_configured:
             logger.error("GEMINI_API_KEY environment variable is missing or invalid.")
             raise ValueError("AI configuration error.")
 
@@ -70,12 +72,12 @@ REQUIRED JSON FORMAT:
 """
 
         try:
-            response = client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=types.GenerateContentConfig(
+            model = genai.GenerativeModel('gemini-2.5-flash')
+            response = model.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(
                     response_mime_type="application/json",
-                    temperature=0.2 # Lower temperature for strictly factual explanations
+                    temperature=0.2
                 )
             )
             

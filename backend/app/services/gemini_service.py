@@ -1,7 +1,6 @@
 import os
 import json
-from google import genai
-from google.genai import types
+import google.generativeai as genai
 from pydantic import BaseModel, Field
 from typing import List, Dict, Any
 import logging
@@ -10,7 +9,11 @@ logger = logging.getLogger(__name__)
 
 # Configure API key safely from environment variable
 api_key = os.environ.get("GEMINI_API_KEY", "")
-client = genai.Client(api_key=api_key) if api_key else None
+if api_key:
+    genai.configure(api_key=api_key)
+    is_configured = True
+else:
+    is_configured = False
 
 class ExtractedActivity(BaseModel):
     category: str = Field(description="Must strictly be one of: 'transport', 'electricity', 'food', 'shopping', 'waste'")
@@ -27,7 +30,7 @@ class GeminiService:
         self.model_name = 'gemini-2.5-flash'
         
     def extract_activities(self, text: str) -> List[Dict[str, Any]]:
-        if not client:
+        if not is_configured:
             logger.error("GEMINI_API_KEY environment variable is missing.")
             raise ValueError("AI configuration error.")
 
@@ -46,14 +49,14 @@ DIARY TEXT:
 """
 
         try:
-            response = client.models.generate_content(
-                model=self.model_name,
-                contents=prompt,
-                config=types.GenerateContentConfig(
+            model = genai.GenerativeModel('gemini-2.5-flash')
+            response = model.generate_content(
+                prompt,
+                generation_config=genai.types.GenerationConfig(
                     response_mime_type="application/json",
                     response_schema=ExtractionResult,
                     temperature=0.1
-                ),
+                )
             )
             
             raw_json = response.text
