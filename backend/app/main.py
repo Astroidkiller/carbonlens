@@ -52,7 +52,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Configure CORS
-origins = os.environ.get("ALLOWED_ORIGINS", "*").split(",")
+origins = settings.ALLOWED_ORIGINS.split(",")
 
 app.add_middleware(
     CORSMiddleware,
@@ -62,13 +62,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.middleware("http")
-async def catch_exceptions_middleware(request, call_next):
-    try:
-        return await call_next(request)
-    except Exception as e:
-        logger.error(f"Internal Server Error: {str(e)}", exc_info=True)
-        return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
+# @app.middleware("http")
+# async def catch_exceptions_middleware(request, call_next):
+#     try:
+#         return await call_next(request)
+#     except Exception as e:
+#         logger.error(f"Internal Server Error: {str(e)}", exc_info=True)
+#         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
 
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
 app.include_router(activities.router, prefix=f"{settings.API_V1_STR}/activities", tags=["activities"])

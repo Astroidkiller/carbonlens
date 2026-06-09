@@ -18,8 +18,13 @@ export const Login: React.FC = () => {
     setIsLoading(true);
 
     try {
+      console.log('--- UI LOGIN ATTEMPT ---');
+      console.log('Payload email:', email);
       const data = await authService.login(email, password);
+      console.log('Login Response:', data);
+      
       login(data.access_token);
+      console.log('Token stored, redirecting to dashboard...');
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to login. Please check your credentials.');

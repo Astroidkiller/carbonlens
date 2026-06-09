@@ -10,18 +10,30 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
+    console.log(`[Axios Request] ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`, config.data || config.params || 'No data');
     const token = localStorage.getItem('token');
     if (token && config.headers) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('[Axios Request Error]', error);
+    return Promise.reject(error);
+  }
 );
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(`[Axios Response] ${response.status}`, response.data);
+    return response;
+  },
   (error) => {
+    console.error('[Axios Response Error]', {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       // Dispatch a custom event to alert AuthContext to log out

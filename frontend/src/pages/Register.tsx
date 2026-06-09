@@ -19,10 +19,18 @@ export const Register: React.FC = () => {
     setIsLoading(true);
 
     try {
-      await authService.register(email, password, fullName);
+      console.log('--- UI REGISTER ATTEMPT ---');
+      console.log('Payload:', { email, fullName });
+      const regResponse = await authService.register(email, password, fullName);
+      console.log('Registration Response:', regResponse);
+
       // Automatically login after successful registration
+      console.log('Attempting automatic login...');
       const loginData = await authService.login(email, password);
+      console.log('Login Response:', loginData);
+      
       login(loginData.access_token);
+      console.log('Token stored, redirecting to dashboard...');
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to register. Please try again.');

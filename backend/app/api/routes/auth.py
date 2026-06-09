@@ -20,8 +20,11 @@ import traceback
     description="Creates a new user account with an email and password. Also initializes their Carbon Score to zero."
 )
 def register_user(user_in: UserCreate, db: Session = Depends(get_db)):
+    print(f"--- BACKEND REGISTER ATTEMPT ---")
+    print(f"Payload: {user_in.dict()}")
     user = db.query(User).filter(User.email == user_in.email).first()
     if user:
+        print(f"Register failed: Email already registered ({user_in.email})")
         raise HTTPException(
             status_code=400,
             detail="The user with this email already exists in the system.",
@@ -35,6 +38,7 @@ def register_user(user_in: UserCreate, db: Session = Depends(get_db)):
     db.add(user)
     db.commit()
     db.refresh(user)
+    print(f"Register success: User ID {user.id}")
     return user
 
 @router.post(
@@ -44,15 +48,24 @@ def register_user(user_in: UserCreate, db: Session = Depends(get_db)):
     description="Authenticates a user and returns a JWT Bearer token for accessing protected routes."
 )
 def login(db: Session = Depends(get_db), form_data: OAuth2PasswordRequestForm = Depends()):
+    print(f"--- BACKEND LOGIN ATTEMPT ---")
+    print(f"Username requested: {form_data.username}")
     user = db.query(User).filter(User.email == form_data.username).first()
-    if not user or not verify_password(form_data.password, user.hashed_password):
+    if not user:
+        print(f"Login failed: User not found ({form_data.username})")
+        raise HTTPException(status_code=400, detail="Incorrect email or password")
+    
+    if not verify_password(form_data.password, user.hashed_password):
+        print(f"Login failed: Invalid password for user ({form_data.username})")
         raise HTTPException(status_code=400, detail="Incorrect email or password")
     
     access_token_expires = timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        user.id, expires_delta=access_token_expires
+    )
+    print(f"Login success: Token generated for {user.email}")
     return {
-        "access_token": create_access_token(
-            user.id, expires_delta=access_token_expires
-        ),
+        "access_token": access_token,
         "token_type": "bearer",
     }
 
