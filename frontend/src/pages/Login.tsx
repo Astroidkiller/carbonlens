@@ -41,7 +41,6 @@ export const Login: React.FC = () => {
             <Leaf className="h-6 w-6" />
           </div>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">Sign in to CarbonLens</h2>
-          <p className="mt-2 text-xs text-gray-500">API Server: {import.meta.env.VITE_API_URL || 'http://localhost:8002/api/v1'}</p>
         </div>
         
         {error && (

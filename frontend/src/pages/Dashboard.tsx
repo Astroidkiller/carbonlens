@@ -47,33 +47,16 @@ export const Dashboard: React.FC = () => {
     fetchData();
   }, []);
 
-  if (loading) {
-    return (
-      <div className="flex h-full items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400"></div>
-      </div>
-    );
-  }
-
-  if (error || !summary || !categories || !trends) {
-    return (
-      <LiquidCard className="p-6 flex items-center text-rose-500 bg-rose-50/50">
-        <AlertCircle className="mr-3 h-6 w-6" />
-        {error || 'Unable to load dashboard data'}
-      </LiquidCard>
-    );
-  }
-
   const pieData = useMemo(() => ({
     labels: ['Transport', 'Food', 'Electricity', 'Shopping', 'Waste'],
     datasets: [
       {
         data: [
-          categories.transport,
-          categories.food,
-          categories.electricity,
-          categories.shopping,
-          categories.waste
+          categories?.transport || 0,
+          categories?.food || 0,
+          categories?.electricity || 0,
+          categories?.shopping || 0,
+          categories?.waste || 0
         ],
         backgroundColor: [
           '#6366f1', // indigo-500
@@ -89,11 +72,11 @@ export const Dashboard: React.FC = () => {
   }), [categories]);
 
   const lineData = useMemo(() => ({
-    labels: trends.daily.map(d => d.period),
+    labels: trends?.daily.map(d => d.period) || [],
     datasets: [
       {
         label: 'Daily Emissions (kg CO2)',
-        data: trends.daily.map(d => d.emissions),
+        data: trends?.daily.map(d => d.emissions) || [],
         borderColor: '#10b981',
         backgroundColor: 'rgba(16, 185, 129, 0.1)',
         tension: 0.4,
@@ -101,6 +84,23 @@ export const Dashboard: React.FC = () => {
       },
     ],
   }), [trends]);
+
+  if (loading) {
+    return (
+      <div className="flex h-full items-center justify-center min-h-[60vh]">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-400"></div>
+      </div>
+    );
+  }
+
+  if (error || !summary || !categories || !trends) {
+    return (
+      <LiquidCard className="p-6 flex items-center text-rose-500 bg-rose-50/50">
+        <AlertCircle className="mr-3 h-6 w-6" />
+        {error || 'Unable to load dashboard data'}
+      </LiquidCard>
+    );
+  }
 
   return (
     <div className="space-y-6">
