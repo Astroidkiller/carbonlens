@@ -14,7 +14,7 @@ This guide details how to deploy CarbonLens into a production environment using 
 4. Configure the environment:
    - **Environment**: `Python 3`
    - **Build Command**: `pip install -r requirements.txt`
-   - **Start Command**: `uvicorn app.main:app --host 0.0.0.0 --port $PORT`
+   - **Start Command**: `uvicorn main:app --host 0.0.0.0 --port $PORT`
 5. Add the following Environment Variables in the Render dashboard:
    - `DATABASE_URL`: Your Neon Postgres URL.
    - `SECRET_KEY`: A secure 32+ character random string (for JWTs).
