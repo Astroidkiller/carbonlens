@@ -93,8 +93,9 @@ export const AddActivity: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             <div>
-              <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Date</label>
+              <label htmlFor="activity_date" className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Date</label>
               <input
+                id="activity_date"
                 type="date"
                 name="activity_date"
                 required
@@ -105,8 +106,9 @@ export const AddActivity: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Category</label>
+              <label htmlFor="category" className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Category</label>
               <select
+                id="category"
                 name="category"
                 className="block w-full rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-3 text-[var(--text)] bg-black/20 transition-all"
                 value={formData.category}
@@ -119,8 +121,9 @@ export const AddActivity: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Activity Type</label>
+              <label htmlFor="activity_type" className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Activity Type</label>
               <select
+                id="activity_type"
                 name="activity_type"
                 className="block w-full rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-3 text-[var(--text)] bg-black/20 transition-all"
                 value={formData.activity_type}
@@ -134,8 +137,9 @@ export const AddActivity: React.FC = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Quantity</label>
+                <label htmlFor="quantity" className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Quantity</label>
                 <input
+                  id="quantity"
                   type="number"
                   name="quantity"
                   required
@@ -148,8 +152,9 @@ export const AddActivity: React.FC = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Unit</label>
+                <label htmlFor="unit" className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Unit</label>
                 <select
+                  id="unit"
                   name="unit"
                   className="block w-full rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-3 text-[var(--text)] bg-black/20 transition-all"
                   value={formData.unit}
@@ -163,8 +168,9 @@ export const AddActivity: React.FC = () => {
             </div>
 
             <div className="md:col-span-2">
-              <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Description (Optional)</label>
+              <label htmlFor="description" className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">Description (Optional)</label>
               <textarea
+                id="description"
                 name="description"
                 rows={3}
                 placeholder="E.g., Commute to work"

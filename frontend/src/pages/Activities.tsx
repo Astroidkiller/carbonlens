@@ -79,6 +79,7 @@ export const Activities: React.FC = () => {
           <div className="relative flex-1">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-[var(--text-muted)]" />
             <input
+              aria-label="Search activities"
               type="text"
               placeholder="Search activities..."
               className="pl-10 w-full rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-2 text-[var(--text)] bg-black/20 placeholder:text-[var(--text-muted)] transition-all"
@@ -87,6 +88,7 @@ export const Activities: React.FC = () => {
             />
           </div>
           <select
+            aria-label="Filter by category"
             className="rounded-xl border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] sm:text-sm p-2 text-[var(--text)] bg-black/20 transition-all"
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
@@ -141,6 +143,7 @@ export const Activities: React.FC = () => {
                         onClick={() => handleDelete(act.id)}
                         className="text-[var(--text-muted)] hover:text-rose-500 transition-colors"
                         title="Delete Activity"
+                        aria-label={`Delete activity ${act.activity_type}`}
                       >
                         <Trash2 className="h-5 w-5" />
                       </button>

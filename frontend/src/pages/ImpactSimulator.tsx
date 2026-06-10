@@ -95,6 +95,7 @@ export const ImpactSimulator: React.FC = () => {
           </div>
           <p className="text-sm text-[var(--text-muted)]">Trees planted (Absorbs ~1.75 kg/mo each)</p>
           <input 
+            aria-label="Trees planted slider"
             type="range" 
             min="0" max="100" 
             value={trees} 
@@ -116,6 +117,7 @@ export const ImpactSimulator: React.FC = () => {
           </div>
           <p className="text-sm text-[var(--text-muted)]">Meat-free days per week (Saves ~8.8 kg/mo each day)</p>
           <input 
+            aria-label="Vegan days slider"
             type="range" 
             min="0" max="7" 
             value={veganDays} 
@@ -137,6 +139,7 @@ export const ImpactSimulator: React.FC = () => {
           </div>
           <p className="text-sm text-[var(--text-muted)]">Kilometers biked instead of driven (Saves ~1.04 kg/mo per km)</p>
           <input 
+            aria-label="Bike commute distance slider"
             type="range" 
             min="0" max="100" 
             step="5"
@@ -159,6 +162,7 @@ export const ImpactSimulator: React.FC = () => {
           </div>
           <p className="text-sm text-[var(--text-muted)]">Solar power generated (Saves ~0.4 kg/mo per kWh)</p>
           <input 
+            aria-label="Solar power generation slider"
             type="range" 
             min="0" max="500" 
             step="10"

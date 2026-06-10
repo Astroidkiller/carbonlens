@@ -3,8 +3,11 @@ import { dashboardService } from '../services/dashboardService';
 import type { DashboardSummary, DashboardCategories, DashboardTrends } from '../types';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title } from 'chart.js';
 import { Pie, Line } from 'react-chartjs-2';
-import { TrendingDown, TrendingUp, Minus, Activity, Wind, AlertCircle } from 'lucide-react';
+import { TrendingDown, TrendingUp, Minus, Activity, Wind, AlertCircle, Lightbulb, Sprout, TreePine, ArrowRight } from 'lucide-react';
 import { LiquidCard } from '../components/ui/LiquidCard';
+import { insightsService } from '../services/insightsService';
+import type { InsightsResponse } from '../services/insightsService';
+import { Link } from 'react-router-dom';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title);
 
@@ -24,20 +27,23 @@ export const Dashboard: React.FC = () => {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [categories, setCategories] = useState<DashboardCategories | null>(null);
   const [trends, setTrends] = useState<DashboardTrends | null>(null);
+  const [insights, setInsights] = useState<InsightsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [sumRes, catRes, trendRes] = await Promise.all([
+        const [sumRes, catRes, trendRes, insightsRes] = await Promise.all([
           dashboardService.getSummary(),
           dashboardService.getCategories(),
-          dashboardService.getTrends()
+          dashboardService.getTrends(),
+          insightsService.getInsights().catch(() => null)
         ]);
         setSummary(sumRes);
         setCategories(catRes);
         setTrends(trendRes);
+        setInsights(insightsRes);
       } catch (err) {
         setError('Failed to load dashboard data. Please try again.');
       } finally {
@@ -207,6 +213,55 @@ export const Dashboard: React.FC = () => {
               No data
             </div>
           )}
+        </LiquidCard>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Quick Tips */}
+        <LiquidCard className="p-6 bg-gradient-to-br from-[var(--surface-strong)] to-[var(--brand)]/5 border border-[var(--border)]">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center text-[var(--text)]">
+              <Lightbulb className="h-5 w-5 mr-2 text-amber-500" />
+              <h3 className="text-lg font-bold tracking-tight">AI Recommendation</h3>
+            </div>
+            <Link to="/insights" className="text-xs font-medium text-[var(--brand)] hover:underline flex items-center">
+              View all <ArrowRight className="h-3 w-3 ml-1" />
+            </Link>
+          </div>
+          {insights && insights.recommendations.length > 0 ? (
+            <div className="space-y-3">
+              <p className="text-[var(--text)] font-medium leading-snug">{insights.recommendations[0].title}</p>
+              <div className="inline-flex items-center text-sm font-bold text-emerald-400 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20">
+                <TrendingDown className="mr-1.5 h-4 w-4" />
+                Potential Savings: {insights.recommendations[0].estimated_savings}
+              </div>
+            </div>
+          ) : (
+            <p className="text-sm text-[var(--text-muted)]">Log more activities to generate personalized tips.</p>
+          )}
+        </LiquidCard>
+
+        {/* Tree Impact Preview */}
+        <LiquidCard className="p-6 bg-gradient-to-br from-[var(--surface-strong)] to-emerald-500/5 border border-[var(--border)]">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center text-[var(--text)]">
+              <Sprout className="h-5 w-5 mr-2 text-emerald-500" />
+              <h3 className="text-lg font-bold tracking-tight">Real-World Impact</h3>
+            </div>
+            <Link to="/simulator" className="text-xs font-medium text-emerald-500 hover:underline flex items-center">
+              Simulate <ArrowRight className="h-3 w-3 ml-1" />
+            </Link>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-[var(--text-muted)] mb-1">Your Total Emissions Equivalent To:</p>
+              <div className="text-3xl font-black text-[var(--text)] tracking-tight">
+                {Math.ceil(summary.total_emissions / 21)} <span className="text-base font-medium text-[var(--text-muted)]">Trees Needed</span>
+              </div>
+              <p className="text-xs text-[var(--text-muted)] mt-1 opacity-80">(Assumes 1 tree absorbs ~21kg CO₂/year)</p>
+            </div>
+            <TreePine className="h-16 w-16 text-emerald-500/20" />
+          </div>
         </LiquidCard>
       </div>
     </div>
