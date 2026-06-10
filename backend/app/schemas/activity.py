@@ -11,7 +11,7 @@ class ActivityBase(BaseModel):
     category: CategoryType
     activity_type: str
     description: Optional[str] = None
-    quantity: float
+    quantity: float = Field(gt=0)
     unit: str
 
 class ActivityCreate(ActivityBase):

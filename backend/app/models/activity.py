@@ -1,6 +1,6 @@
 import uuid
 from sqlalchemy import Column, String, DateTime, Float, ForeignKey
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.types import Uuid
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from ..db.database import Base
@@ -8,8 +8,8 @@ from ..db.database import Base
 class Activity(Base):
     __tablename__ = "activities"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
+    id = Column(Uuid(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(Uuid(as_uuid=True), ForeignKey("users.id"), nullable=False, index=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     activity_date = Column(DateTime(timezone=True), nullable=False)
     

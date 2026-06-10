@@ -3,6 +3,31 @@ from sqlalchemy import func, case, extract, text, and_
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 from typing import Dict, Any, List
+from sqlalchemy.sql import expression
+from sqlalchemy.ext.compiler import compiles
+
+class date_trunc(expression.FunctionElement):
+    type = expression.FunctionElement
+    name = 'date_trunc'
+    inherit_cache = True
+
+@compiles(date_trunc, 'postgresql')
+def compile_date_trunc(element, compiler, **kw):
+    return "DATE_TRUNC(%s, %s)" % (compiler.process(element.clauses.clauses[0]), compiler.process(element.clauses.clauses[1]))
+
+@compiles(date_trunc, 'sqlite')
+def compile_date_trunc_sqlite(element, compiler, **kw):
+    # element.clauses.clauses[0] is the precision (e.g. 'day', 'week', 'month')
+    # element.clauses.clauses[1] is the column
+    col = compiler.process(element.clauses.clauses[1])
+    precision = element.clauses.clauses[0].value
+    if precision == 'day':
+        return f"strftime('%Y-%m-%d', {col})"
+    elif precision == 'week':
+        return f"strftime('%Y-%W', {col})"
+    elif precision == 'month':
+        return f"strftime('%Y-%m', {col})"
+    return f"strftime('%Y-%m-%d', {col})"
 
 from ..models.activity import Activity
 from ..schemas.dashboard import (
@@ -133,21 +158,21 @@ def get_dashboard_trends(db: Session, user_id: UUID) -> DashboardTrends:
     # Daily (Last 14 days)
     fourteen_days_ago = datetime.now(timezone.utc) - timedelta(days=14)
     daily_res = db.query(
-        func.date_trunc('day', Activity.activity_date).label('day'),
+        date_trunc('day', Activity.activity_date).label('day'),
         func.sum(Activity.carbon_emission)
     ).filter(Activity.user_id == user_id, Activity.activity_date >= fourteen_days_ago).group_by('day').order_by('day').all()
     
     # Weekly (Last 8 weeks)
     eight_weeks_ago = datetime.now(timezone.utc) - timedelta(weeks=8)
     weekly_res = db.query(
-        func.date_trunc('week', Activity.activity_date).label('week'),
+        date_trunc('week', Activity.activity_date).label('week'),
         func.sum(Activity.carbon_emission)
     ).filter(Activity.user_id == user_id, Activity.activity_date >= eight_weeks_ago).group_by('week').order_by('week').all()
     
     # Monthly (Last 12 months)
     twelve_months_ago = datetime.now(timezone.utc) - timedelta(days=365)
     monthly_res = db.query(
-        func.date_trunc('month', Activity.activity_date).label('month'),
+        date_trunc('month', Activity.activity_date).label('month'),
         func.sum(Activity.carbon_emission)
     ).filter(Activity.user_id == user_id, Activity.activity_date >= twelve_months_ago).group_by('month').order_by('month').all()
 

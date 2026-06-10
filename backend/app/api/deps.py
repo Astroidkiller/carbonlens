@@ -23,7 +23,12 @@ def get_current_user(db: Session = Depends(get_db), token: str = Depends(oauth2_
     except JWTError:
         raise credentials_exception
         
-    user = db.query(User).filter(User.id == token_data.sub).first()
-    if not user:
+    import uuid
+    try:
+        user_id = uuid.UUID(token_data.sub)
+    except ValueError:
+        raise credentials_exception
+    user = db.query(User).filter(User.id == user_id).first()
+    if user is None:
         raise credentials_exception
     return user
