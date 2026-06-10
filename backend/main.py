@@ -51,12 +51,10 @@ import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Parse ALLOWED_ORIGINS string to a list
-allowed_origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(",") if origin.strip()]
-
+# Use wildcard CORS to prevent any blocking from Vercel preview environments
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins, # Secure CORS configuration
+    allow_origins=["*"], # Allow all origins
 
     allow_credentials=False, # Must be false when using wildcard
     allow_methods=["*"],
