@@ -51,21 +51,25 @@ import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Parse ALLOWED_ORIGINS string to a list
+allowed_origins = [origin.strip() for origin in settings.ALLOWED_ORIGINS.split(",") if origin.strip()]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow all origins for Vercel
+    allow_origins=allowed_origins, # Secure CORS configuration
+
     allow_credentials=False, # Must be false when using wildcard
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# @app.middleware("http")
-# async def catch_exceptions_middleware(request, call_next):
-#     try:
-#         return await call_next(request)
-#     except Exception as e:
-#         logger.error(f"Internal Server Error: {str(e)}", exc_info=True)
-#         return JSONResponse(status_code=500, content={"message": "Internal Server Error"})
+@app.middleware("http")
+async def catch_exceptions_middleware(request, call_next):
+    try:
+        return await call_next(request)
+    except Exception as e:
+        logger.error(f"Internal Server Error: {str(e)}", exc_info=True)
+        return JSONResponse(status_code=500, content={"detail": "An unexpected internal server error occurred."})
 
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
 app.include_router(activities.router, prefix=f"{settings.API_V1_STR}/activities", tags=["activities"])

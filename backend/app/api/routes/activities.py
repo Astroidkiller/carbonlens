@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from uuid import UUID
 from typing import List
+import logging
 
 from ...db.database import get_db
 from ...models.user import User
@@ -10,6 +11,8 @@ from ...schemas.activity import ActivityCreate, ActivityUpdate, ActivityOut, Dia
 from ..deps import get_current_user
 from ...services.carbon_calculation_service import calculate_carbon_emission
 from ...services.ai_diary_service import ai_diary_service
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -26,7 +29,11 @@ def extract_activities(
     try:
         return ai_diary_service.extract_and_calculate(request.text)
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        logger.warning(f"Validation error in extract_activities: {str(e)}")
+        raise HTTPException(status_code=400, detail="Invalid data provided for processing.")
+    except Exception as e:
+        logger.error(f"Error in extract_activities: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=422, detail="Failed to process your request securely.")
 
 @router.post(
     "/diary",
@@ -71,9 +78,11 @@ def extract_and_save_diary(
         return saved_activities
         
     except ValueError as e:
-        raise HTTPException(status_code=400, detail=f"Failed to process diary: {str(e)}")
+        logger.warning(f"Validation error in extract_and_save_diary: {str(e)}")
+        raise HTTPException(status_code=400, detail="Invalid data provided for processing.")
     except Exception as e:
-        raise HTTPException(status_code=422, detail=f"AI failed to extract valid data: {str(e)}")
+        logger.error(f"Error in extract_and_save_diary: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=422, detail="AI failed to extract valid data securely.")
 
 @router.post(
     "/bulk",

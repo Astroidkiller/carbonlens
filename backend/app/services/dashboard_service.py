@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import func, case, extract, text
+from sqlalchemy import func, case, extract, text, and_
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 from typing import Dict, Any, List
@@ -76,19 +76,19 @@ def get_dashboard_summary(db: Session, user_id: UUID) -> DashboardSummary:
     month_ago = now - timedelta(days=30)
     two_months_ago = now - timedelta(days=60)
     
-    def get_sum_between(start_dt, end_dt):
-        val = user_activities.filter(
-            Activity.activity_date >= start_dt,
-            Activity.activity_date < end_dt
-        ).with_entities(func.sum(Activity.carbon_emission)).scalar()
-        return val or 0.0
+    metrics = user_activities.with_entities(
+        func.sum(case((Activity.activity_date >= week_ago, Activity.carbon_emission), else_=0)).label('current_week'),
+        func.sum(case((and_(Activity.activity_date >= two_weeks_ago, Activity.activity_date < week_ago), Activity.carbon_emission), else_=0)).label('previous_week'),
+        func.sum(case((Activity.activity_date >= month_ago, Activity.carbon_emission), else_=0)).label('current_month'),
+        func.sum(case((and_(Activity.activity_date >= two_months_ago, Activity.activity_date < month_ago), Activity.carbon_emission), else_=0)).label('previous_month'),
+    ).first()
 
-    current_week = get_sum_between(week_ago, now)
-    previous_week = get_sum_between(two_weeks_ago, week_ago)
+    current_week = metrics.current_week or 0.0
+    previous_week = metrics.previous_week or 0.0
     weekly_change = get_percent_change(current_week, previous_week)
     
-    current_month = get_sum_between(month_ago, now)
-    previous_month = get_sum_between(two_months_ago, month_ago)
+    current_month = metrics.current_month or 0.0
+    previous_month = metrics.previous_month or 0.0
     monthly_change = get_percent_change(current_month, previous_month)
     
     # Trend direction based on weekly change
@@ -179,13 +179,28 @@ def get_dashboard_top_contributors(db: Session, user_id: UUID) -> DashboardTopCo
     )
 
 def get_dashboard_insights_data(db: Session, user_id: UUID) -> DashboardInsightsData:
-    summary = get_dashboard_summary(db, user_id)
-    total = summary.total_emissions
+    now = datetime.now(timezone.utc)
+    month_ago = now - timedelta(days=30)
+    two_months_ago = now - timedelta(days=60)
     
-    cats = db.query(Activity.category, func.sum(Activity.carbon_emission).label("total"))\
-        .filter(Activity.user_id == user_id)\
-        .group_by(Activity.category)\
-        .order_by(text("total DESC")).all()
+    user_activities = db.query(Activity).filter(Activity.user_id == user_id)
+    
+    # 1. Get total emissions and monthly stats
+    metrics = user_activities.with_entities(
+        func.sum(Activity.carbon_emission).label('total'),
+        func.sum(case((Activity.activity_date >= month_ago, Activity.carbon_emission), else_=0)).label('current_month'),
+        func.sum(case((and_(Activity.activity_date >= two_months_ago, Activity.activity_date < month_ago), Activity.carbon_emission), else_=0)).label('previous_month'),
+    ).first()
+    
+    total = metrics.total or 0.0
+    current_month = metrics.current_month or 0.0
+    previous_month = metrics.previous_month or 0.0
+    monthly_change_percent = get_percent_change(current_month, previous_month)
+    
+    # 2. Get categories
+    cats = user_activities.with_entities(
+        Activity.category, func.sum(Activity.carbon_emission).label("total")
+    ).group_by(Activity.category).order_by(text("total DESC")).all()
         
     highest_cat = cats[0][0] if cats else None
     highest_val = cats[0][1] if cats else 0.0
@@ -193,12 +208,13 @@ def get_dashboard_insights_data(db: Session, user_id: UUID) -> DashboardInsights
     
     highest_pct = round((highest_val / total) * 100, 2) if total > 0 else 0.0
 
-    largest_activity = db.query(Activity).filter(Activity.user_id == user_id).order_by(Activity.carbon_emission.desc()).first()
+    # 3. Largest activity
+    largest_activity = user_activities.order_by(Activity.carbon_emission.desc()).first()
     
     return DashboardInsightsData(
         highest_category=highest_cat,
         highest_category_percentage=highest_pct,
         lowest_category=lowest_cat,
         largest_activity=largest_activity.activity_type if largest_activity else None,
-        monthly_change_percent=summary.monthly_change_percent
+        monthly_change_percent=monthly_change_percent
     )

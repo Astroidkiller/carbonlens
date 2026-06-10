@@ -1,5 +1,8 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
+import logging
+
+logger = logging.getLogger(__name__)
 
 from ...db.database import get_db
 from ...models.user import User
@@ -70,6 +73,6 @@ def get_insights(db: Session = Depends(get_db), current_user: User = Depends(get
         data = insights_service.get_insights(db, current_user.id)
         return InsightsResponse(**data)
     except Exception as e:
-        from fastapi import HTTPException, status
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+        logger.error(f"Error generating AI insights: {str(e)}", exc_info=True)
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="An internal error occurred while generating insights.")
 

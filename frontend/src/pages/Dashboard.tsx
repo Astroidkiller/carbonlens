@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { dashboardService } from '../services/dashboardService';
 import type { DashboardSummary, DashboardCategories, DashboardTrends } from '../types';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title } from 'chart.js';
@@ -7,6 +7,18 @@ import { TrendingDown, TrendingUp, Minus, Activity, Wind, AlertCircle } from 'lu
 import { LiquidCard } from '../components/ui/LiquidCard';
 
 ChartJS.register(ArcElement, Tooltip, Legend, CategoryScale, LinearScale, PointElement, LineElement, Title);
+
+const getTrendIcon = (direction: string) => {
+  if (direction === 'Improving') return <TrendingDown className="h-5 w-5 text-emerald-500" />;
+  if (direction === 'Increasing') return <TrendingUp className="h-5 w-5 text-red-500" />;
+  return <Minus className="h-5 w-5 text-gray-500" />;
+};
+
+const getTrendColor = (direction: string) => {
+  if (direction === 'Improving') return 'text-emerald-500';
+  if (direction === 'Increasing') return 'text-rose-500';
+  return 'text-[var(--text-muted)]';
+};
 
 export const Dashboard: React.FC = () => {
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
@@ -52,7 +64,7 @@ export const Dashboard: React.FC = () => {
     );
   }
 
-  const pieData = {
+  const pieData = useMemo(() => ({
     labels: ['Transport', 'Food', 'Electricity', 'Shopping', 'Waste'],
     datasets: [
       {
@@ -74,9 +86,9 @@ export const Dashboard: React.FC = () => {
         borderColor: '#ffffff',
       },
     ],
-  };
+  }), [categories]);
 
-  const lineData = {
+  const lineData = useMemo(() => ({
     labels: trends.daily.map(d => d.period),
     datasets: [
       {
@@ -88,19 +100,7 @@ export const Dashboard: React.FC = () => {
         fill: true,
       },
     ],
-  };
-
-  const getTrendIcon = (direction: string) => {
-    if (direction === 'Improving') return <TrendingDown className="h-5 w-5 text-emerald-500" />;
-    if (direction === 'Increasing') return <TrendingUp className="h-5 w-5 text-red-500" />;
-    return <Minus className="h-5 w-5 text-gray-500" />;
-  };
-
-  const getTrendColor = (direction: string) => {
-    if (direction === 'Improving') return 'text-emerald-500';
-    if (direction === 'Increasing') return 'text-rose-500';
-    return 'text-[var(--text-muted)]';
-  };
+  }), [trends]);
 
   return (
     <div className="space-y-6">

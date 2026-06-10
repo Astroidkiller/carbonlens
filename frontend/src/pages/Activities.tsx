@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { activityService } from '../services/activityService';
 import type { Activity } from '../types';
@@ -28,22 +28,24 @@ export const Activities: React.FC = () => {
     fetchActivities();
   }, []);
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = useCallback(async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this activity?')) return;
     try {
       await activityService.delete(id);
-      setActivities(activities.filter(a => a.id !== id));
+      setActivities(prev => prev.filter(a => a.id !== id));
     } catch (err) {
       alert('Failed to delete activity');
     }
-  };
+  }, []);
 
-  const filteredActivities = activities.filter(a => {
-    const matchesSearch = (a.activity_type.toLowerCase().includes(search.toLowerCase()) || 
-                          (a.description || '').toLowerCase().includes(search.toLowerCase()));
-    const matchesCategory = filterCategory ? a.category === filterCategory : true;
-    return matchesSearch && matchesCategory;
-  });
+  const filteredActivities = useMemo(() => {
+    return activities.filter(a => {
+      const matchesSearch = (a.activity_type.toLowerCase().includes(search.toLowerCase()) || 
+                            (a.description || '').toLowerCase().includes(search.toLowerCase()));
+      const matchesCategory = filterCategory ? a.category === filterCategory : true;
+      return matchesSearch && matchesCategory;
+    });
+  }, [activities, search, filterCategory]);
 
   if (loading) {
     return (
