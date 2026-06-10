@@ -9,6 +9,7 @@ import { Activities } from './pages/Activities';
 import { AddActivity } from './pages/AddActivity';
 import { Diary } from './pages/Diary';
 import { Insights } from './pages/Insights';
+import { ImpactSimulator } from './pages/ImpactSimulator';
 import { Settings } from './pages/Settings';
 
 const App: React.FC = () => {
@@ -25,6 +26,7 @@ const App: React.FC = () => {
           <Route path="/add-activity" element={<AddActivity />} />
           <Route path="/diary" element={<Diary />} />
           <Route path="/insights" element={<Insights />} />
+          <Route path="/simulator" element={<ImpactSimulator />} />
           <Route path="/settings" element={<Settings />} />
         </Route>
       </Route>

@@ -1,8 +1,9 @@
 import React from 'react';
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { LiquidCard } from '../components/ui/LiquidCard';
+import { NatureBackground } from '../components/layout/NatureBackground';
 import { useAuth } from '../context/AuthContext';
-import { LayoutDashboard, List, PlusCircle, Lightbulb, LogOut, Leaf, Bot } from 'lucide-react';
+import { LayoutDashboard, List, PlusCircle, Lightbulb, LogOut, Leaf, Bot, Sprout } from 'lucide-react';
 
 export const DashboardLayout: React.FC = () => {
   const { logout, user } = useAuth();
@@ -14,11 +15,13 @@ export const DashboardLayout: React.FC = () => {
     { name: 'Log Activity', path: '/add-activity', icon: PlusCircle },
     { name: 'AI Diary', path: '/diary', icon: Bot },
     { name: 'AI Insights', path: '/insights', icon: Lightbulb },
+    { name: 'Impact Simulator', path: '/simulator', icon: Sprout },
   ];
 
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col md:flex-row">
       {/* Dynamic Background Noise is applied via body::before in index.css */}
+      <NatureBackground />
 
       {/* Sidebar - Docked Panel */}
       <div className="w-full md:w-64 flex-shrink-0 p-4 md:p-6 z-10">
