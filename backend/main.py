@@ -63,13 +63,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.middleware("http")
-async def catch_exceptions_middleware(request, call_next):
-    try:
-        return await call_next(request)
-    except Exception as e:
-        logger.error(f"Internal Server Error: {str(e)}", exc_info=True)
-        return JSONResponse(status_code=500, content={"detail": "An unexpected internal server error occurred."})
+from fastapi import Request
+from fastapi.responses import JSONResponse
+import traceback
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    logger.error(f"Internal Server Error: {str(exc)}", exc_info=True)
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "An unexpected internal server error occurred."}
+    )
 
 app.include_router(auth.router, prefix=f"{settings.API_V1_STR}/auth", tags=["auth"])
 app.include_router(activities.router, prefix=f"{settings.API_V1_STR}/activities", tags=["activities"])
