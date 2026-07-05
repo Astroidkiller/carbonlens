@@ -42,8 +42,8 @@ All parameters (e.g., `10 miles car`) are normalized (`10 miles -> 16.09 km`) by
 - **Deployment Strategy**: Vercel (Frontend), Render (Backend)
 
 ## 8. Deployment Links
-- **Live Frontend**: `[Insert Vercel URL]`
-- **Live API Endpoint**: `[Insert Render URL]`
+- **Live Frontend**: https://carbonlens-sage.vercel.app/
+- **Live API Endpoint**: https://carbonlens-backend-1em1.onrender.com
 - **Swagger Documentation**: `[Insert Render URL]/docs`
 
 ## 9. Future Improvements
