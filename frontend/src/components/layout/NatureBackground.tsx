@@ -2,46 +2,41 @@ import React, { useMemo } from 'react';
 import './NatureBackground.css';
 
 export const NatureBackground: React.FC = () => {
-  // Generate random values for mist and leaves so they look organic
-  const mistParticles = useMemo(() => {
-    return Array.from({ length: 8 }).map((_, i) => ({
-      id: `mist-${i}`,
-      left: `${Math.random() * 100}vw`,
-      width: `${Math.random() * 30 + 20}vw`,
-      height: `${Math.random() * 30 + 20}vw`,
-      animationDuration: `${Math.random() * 15 + 15}s`,
-      animationDelay: `${Math.random() * 10}s`,
-    }));
-  }, []);
+  const orbs = useMemo(() => [
+    { id: 'orb-1', left: '15%', top: '30%', size: '25vw', color: 'rgba(52, 211, 153, 0.04)', duration: '25s', delay: '0s' },
+    { id: 'orb-2', left: '70%', top: '15%', size: '20vw', color: 'rgba(99, 102, 241, 0.03)', duration: '30s', delay: '5s' },
+    { id: 'orb-3', left: '50%', top: '70%', size: '22vw', color: 'rgba(14, 165, 233, 0.03)', duration: '28s', delay: '10s' },
+  ], []);
 
   const leaves = useMemo(() => {
-    return Array.from({ length: 12 }).map((_, i) => ({
+    return Array.from({ length: 5 }).map((_, i) => ({
       id: `leaf-${i}`,
-      left: `${Math.random() * 100}vw`,
-      animationDuration: `${Math.random() * 10 + 8}s`,
-      animationDelay: `${Math.random() * 15}s`,
-      scale: Math.random() * 0.5 + 0.5,
+      left: `${15 + i * 18}vw`,
+      animationDuration: `${12 + i * 3}s`,
+      animationDelay: `${i * 4}s`,
     }));
   }, []);
 
   return (
     <div className="nature-bg-container" aria-hidden="true">
-      {/* Mist Particles */}
-      {mistParticles.map(mist => (
+      {/* Ambient glow orbs */}
+      {orbs.map(orb => (
         <div
-          key={mist.id}
-          className="mist-particle"
+          key={orb.id}
+          className="ambient-orb"
           style={{
-            left: mist.left,
-            width: mist.width,
-            height: mist.height,
-            animationDuration: mist.animationDuration,
-            animationDelay: mist.animationDelay,
+            left: orb.left,
+            top: orb.top,
+            width: orb.size,
+            height: orb.size,
+            background: orb.color,
+            animationDuration: orb.duration,
+            animationDelay: orb.delay,
           }}
         />
       ))}
 
-      {/* Falling Leaves */}
+      {/* Sparse falling leaves */}
       {leaves.map(leaf => (
         <div
           key={leaf.id}
@@ -50,14 +45,9 @@ export const NatureBackground: React.FC = () => {
             left: leaf.left,
             animationDuration: leaf.animationDuration,
             animationDelay: leaf.animationDelay,
-            transform: `scale(${leaf.scale})`,
           }}
         />
       ))}
-
-      {/* Bottom Water Waves */}
-      <div className="water-wave" />
-      <div className="water-wave wave-2" />
     </div>
   );
 };

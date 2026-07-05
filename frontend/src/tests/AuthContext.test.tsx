@@ -51,9 +51,8 @@ describe('AuthContext', () => {
     vi.mocked(authService.getProfile).mockResolvedValueOnce({
       id: 'user-123',
       email: 'test@example.com',
+      full_name: 'Test User',
       current_carbon_score: 0,
-      tier: 'Bronze',
-      created_at: '2023-01-01',
     });
 
     render(

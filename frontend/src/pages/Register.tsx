@@ -2,7 +2,10 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { authService } from '../services/authService';
-import { Leaf } from 'lucide-react';
+import { Leaf, ArrowRight } from 'lucide-react';
+import { LiquidCard } from '../components/ui/LiquidCard';
+import { LiquidButton } from '../components/ui/LiquidButton';
+import { NatureBackground } from '../components/layout/NatureBackground';
 
 export const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -19,18 +22,9 @@ export const Register: React.FC = () => {
     setIsLoading(true);
 
     try {
-      console.log('--- UI REGISTER ATTEMPT ---');
-      console.log('Payload:', { email, fullName });
-      const regResponse = await authService.register(email, password, fullName);
-      console.log('Registration Response:', regResponse);
-
-      // Automatically login after successful registration
-      console.log('Attempting automatic login...');
+      await authService.register(email, password, fullName);
       const loginData = await authService.login(email, password);
-      console.log('Login Response:', loginData);
-      
       login(loginData.access_token);
-      console.log('Token stored, redirecting to dashboard...');
       navigate('/dashboard');
     } catch (err: any) {
       setError(err.response?.data?.detail || 'Failed to register. Please try again.');
@@ -40,77 +34,91 @@ export const Register: React.FC = () => {
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
-        <div className="text-center">
-          <div className="mx-auto h-12 w-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center">
-            <Leaf className="h-6 w-6" />
-          </div>
-          <h1 className="mt-6 text-3xl font-extrabold text-gray-900">Join CarbonLens</h1>
-        </div>
-        
-        {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm text-center">
-            {error}
-          </div>
-        )}
-
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">Full Name</label>
-              <input
-                id="fullName"
-                type="text"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm text-gray-900"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-              />
+    <main className="min-h-screen relative flex items-center justify-center overflow-hidden px-4">
+      <NatureBackground />
+      
+      <div className="w-full max-w-md relative z-10 animate-slide-up">
+        <LiquidCard className="p-8 sm:p-10" hover={false}>
+          <div className="text-center mb-10">
+            <div className="mx-auto h-16 w-16 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 shadow-[inset_0_0_20px_rgba(52,211,153,0.1)] border border-emerald-500/20">
+              <Leaf className="h-8 w-8" />
             </div>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email address</label>
-              <input
-                id="email"
-                type="email"
-                required
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm text-gray-900"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <input
-                id="password"
-                type="password"
-                required
-                minLength={6}
-                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-emerald-500 focus:border-emerald-500 sm:text-sm text-gray-900"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+            <h1 className="text-3xl font-semibold text-[var(--text)] tracking-tight">Create Account</h1>
+            <p className="mt-2 text-[var(--text-muted)] font-medium">Join CarbonLens to track your footprint</p>
           </div>
+          
+          {error && (
+            <div className="mb-6 bg-rose-500/10 border border-rose-500/20 text-rose-400 p-4 rounded-2xl text-sm text-center font-medium animate-fade-in">
+              {error}
+            </div>
+          )}
 
-          <div>
-            <button
-              type="submit"
-              disabled={isLoading}
-              className={`group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
-            >
-              {isLoading ? 'Creating account...' : 'Create Account'}
-            </button>
+          <form className="space-y-6" onSubmit={handleSubmit}>
+            <div className="space-y-5">
+              <div>
+                <label htmlFor="fullName" className="block text-sm font-medium text-[var(--text-muted)] mb-2 ml-1">Full Name</label>
+                <input
+                  id="fullName"
+                  type="text"
+                  required
+                  className="glass-input w-full px-4 py-3 sm:text-sm"
+                  placeholder="John Doe"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-[var(--text-muted)] mb-2 ml-1">Email address</label>
+                <input
+                  id="email"
+                  type="email"
+                  required
+                  className="glass-input w-full px-4 py-3 sm:text-sm"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-[var(--text-muted)] mb-2 ml-1">Password</label>
+                <input
+                  id="password"
+                  type="password"
+                  required
+                  minLength={6}
+                  className="glass-input w-full px-4 py-3 sm:text-sm"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="pt-2">
+              <LiquidButton
+                type="submit"
+                variant="primary"
+                disabled={isLoading}
+                className="w-full py-3.5"
+              >
+                {isLoading ? 'Creating account...' : (
+                  <>
+                    Create Account
+                    <ArrowRight className="h-4 w-4 ml-1 opacity-70" />
+                  </>
+                )}
+              </LiquidButton>
+            </div>
+          </form>
+
+          <div className="mt-8 text-center text-sm font-medium">
+            <span className="text-[var(--text-muted)]">Already have an account? </span>
+            <Link to="/login" className="text-emerald-400 hover:text-emerald-300 transition-colors">
+              Sign in
+            </Link>
           </div>
-        </form>
-
-        <div className="text-center text-sm">
-          <span className="text-gray-600">Already have an account? </span>
-          <Link to="/login" className="font-medium text-emerald-600 hover:text-emerald-500">
-            Sign in
-          </Link>
-        </div>
+        </LiquidCard>
       </div>
-    </div>
+    </main>
   );
 };

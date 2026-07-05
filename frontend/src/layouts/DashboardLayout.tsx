@@ -15,31 +15,42 @@ export const DashboardLayout: React.FC = () => {
     { name: 'Log Activity', path: '/add-activity', icon: PlusCircle },
     { name: 'AI Diary', path: '/diary', icon: Bot },
     { name: 'AI Insights', path: '/insights', icon: Lightbulb },
-    { name: 'Impact Simulator', path: '/simulator', icon: Sprout },
+    { name: 'Simulator', path: '/simulator', icon: Sprout },
   ];
+
+  // Generate avatar initials
+  const initials = user?.full_name
+    ? user.full_name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+    : '?';
 
   return (
     <div className="min-h-screen relative overflow-hidden flex flex-col md:flex-row">
-      {/* Dynamic Background Noise is applied via body::before in index.css */}
       <NatureBackground />
 
-      {/* Sidebar - Docked Panel */}
-      <div className="w-full md:w-64 flex-shrink-0 p-4 md:p-6 z-10">
-        <LiquidCard className="h-full flex flex-col">
-          <div className="flex items-center justify-center h-16 border-b border-[var(--border)] px-4">
-            <Leaf className="h-6 w-6 text-[var(--brand)] mr-2 drop-shadow-sm" />
-            <span className="text-xl font-bold text-[var(--text)] tracking-tight">CarbonLens</span>
+      {/* Sidebar */}
+      <div className="w-full md:w-64 flex-shrink-0 p-3 md:p-5 z-10">
+        <LiquidCard className="h-full flex flex-col" hover={false}>
+          {/* Brand */}
+          <div className="flex items-center justify-center h-14 px-5">
+            <Leaf className="h-5 w-5 text-[var(--brand)] mr-2" />
+            <span className="text-lg font-semibold text-[var(--text)] tracking-tight">CarbonLens</span>
           </div>
           
-          <div className="p-4 border-b border-[var(--border)] bg-[var(--surface-strong)]">
-            <p className="text-sm font-semibold text-[var(--text)]">{user?.full_name}</p>
-            <p className="text-xs text-[var(--text-muted)] truncate">{user?.email}</p>
-            <div className="mt-2 text-xs font-semibold text-[var(--text)] bg-[var(--border-light)] border border-[var(--border)] inline-block px-3 py-1 rounded-full shadow-sm">
-              Score: {user?.current_carbon_score || 0}
+          {/* User info */}
+          <div className="mx-4 p-3 rounded-2xl bg-white/[0.03]">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center text-xs font-semibold text-emerald-400 border border-emerald-500/20">
+                {initials}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-[var(--text)] truncate">{user?.full_name}</p>
+                <p className="text-xs text-[var(--text-muted)] truncate">{user?.email}</p>
+              </div>
             </div>
           </div>
 
-          <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+          {/* Navigation */}
+          <nav className="flex-1 px-3 py-5 space-y-1 overflow-y-auto">
             {navItems.map((item) => {
               const isActive = location.pathname === item.path;
               const Icon = item.icon;
@@ -47,23 +58,27 @@ export const DashboardLayout: React.FC = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`flex items-center px-4 py-3 text-sm font-medium rounded-full transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] ${
-                    isActive
-                      ? 'bg-[var(--border-light)] text-[var(--text)] border border-[var(--border)] shadow-sm'
-                      : 'text-[var(--text-muted)] hover:bg-[var(--border)] hover:text-[var(--text)] hover:-translate-y-0.5'
-                  }`}
+                  className={`
+                    flex items-center px-4 py-2.5 text-[13px] font-medium rounded-xl
+                    transition-all duration-300 ease-out
+                    ${isActive
+                      ? 'bg-white/[0.08] text-[var(--text)] shadow-sm'
+                      : 'text-[var(--text-muted)] hover:bg-white/[0.04] hover:text-[var(--text)]'
+                    }
+                  `}
                 >
-                  <Icon className={`mr-3 h-5 w-5 ${isActive ? 'text-[var(--brand)]' : 'text-[var(--text-muted)]'}`} />
+                  <Icon className={`mr-3 h-[18px] w-[18px] ${isActive ? 'text-[var(--brand)]' : ''}`} />
                   {item.name}
                 </Link>
               );
             })}
           </nav>
           
-          <div className="p-4 border-t border-[var(--border)]">
+          {/* Sign out */}
+          <div className="p-3">
             <button
               onClick={logout}
-              className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-rose-500 bg-[var(--surface-strong)] border border-[var(--border)] rounded-full hover:bg-[var(--border)] transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] active:scale-95"
+              className="flex items-center justify-center w-full px-4 py-2 text-[13px] font-medium text-[var(--text-muted)] rounded-xl hover:bg-rose-500/10 hover:text-rose-400 transition-all duration-300"
             >
               <LogOut className="mr-2 h-4 w-4" />
               Sign out
@@ -74,7 +89,7 @@ export const DashboardLayout: React.FC = () => {
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col overflow-hidden z-10">
-        <main className="flex-1 overflow-x-hidden overflow-y-auto p-6 text-[var(--text)]">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto p-5 md:p-8">
           <Outlet />
         </main>
       </div>

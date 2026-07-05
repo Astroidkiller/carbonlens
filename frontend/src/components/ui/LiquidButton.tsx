@@ -1,21 +1,40 @@
 import React from 'react';
 
 interface LiquidButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'danger';
-  gradient?: boolean;
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
 }
 
 export const LiquidButton: React.FC<LiquidButtonProps> = ({ 
   children, 
   className = '', 
   variant = 'primary',
-  gradient = false,
   ...props 
 }) => {
-  const getVariantStyles = () => {
-    if (variant === 'danger') return 'text-rose-500 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20';
-    if (gradient) return 'text-white bg-[var(--surface-strong)] border-[var(--border-light)] shadow-md hover:bg-white/5';
-    return 'text-[var(--text)] hover:bg-[var(--surface-strong)] border-[var(--border)]';
+  const variants: Record<string, string> = {
+    primary: `
+      bg-gradient-to-r from-emerald-500 to-teal-500
+      text-white font-medium
+      shadow-[0_4px_20px_rgba(52,211,153,0.25)]
+      hover:shadow-[0_6px_28px_rgba(52,211,153,0.35)]
+      hover:brightness-110
+      border-0
+    `,
+    secondary: `
+      bg-white/[0.04] text-[var(--text)]
+      border border-[var(--border)]
+      hover:bg-white/[0.08] hover:border-[var(--border-light)]
+      backdrop-blur-sm
+    `,
+    danger: `
+      bg-rose-500/10 text-rose-400
+      border border-rose-500/20
+      hover:bg-rose-500/20 hover:border-rose-500/30
+    `,
+    ghost: `
+      text-[var(--text-muted)]
+      hover:text-[var(--text)] hover:bg-white/[0.04]
+      border border-transparent
+    `,
   };
 
   return (
@@ -23,19 +42,18 @@ export const LiquidButton: React.FC<LiquidButtonProps> = ({
       {...props}
       className={`
         relative overflow-hidden
-        px-6 py-2.5 font-medium text-sm
-        rounded-full
-        glass
-        hover:-translate-y-[1px] hover:shadow-[0_40px_70px_-15px_rgba(0,0,0,0.3)]
-        active:scale-95 active:translate-y-0
-        disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0
-        ${getVariantStyles()}
+        px-5 py-2.5 text-sm
+        rounded-2xl
+        transition-all duration-300 ease-out
+        active:scale-[0.97]
+        disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:scale-100
+        ${variants[variant] || variants.primary}
         ${className}
       `}
     >
-      <div className="relative z-10 flex items-center justify-center">
+      <span className="relative z-10 flex items-center justify-center gap-2">
         {children}
-      </div>
+      </span>
     </button>
   );
 };

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-
 import { activityService } from '../services/activityService';
 import { Bot, Sparkles, CheckCircle2, AlertCircle, X, ArrowRight } from 'lucide-react';
 import { LiquidCard } from '../components/ui/LiquidCard';
@@ -11,7 +10,6 @@ export const Diary: React.FC = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   
-  // Preview state
   const [previewData, setPreviewData] = useState<any>(null);
   const [saving, setSaving] = useState(false);
 
@@ -43,7 +41,6 @@ export const Diary: React.FC = () => {
     setError('');
     
     try {
-      // Just pass the valid activity dicts
       const payload = previewData.activities.map((item: any) => item.activity);
       await activityService.bulkCreate(payload);
       
@@ -61,7 +58,6 @@ export const Diary: React.FC = () => {
     const updatedActivities = [...previewData.activities];
     updatedActivities.splice(index, 1);
     
-    // Recalculate totals
     const newTotal = updatedActivities.reduce((sum, item) => sum + item.carbon_emission, 0);
     
     setPreviewData({
@@ -73,126 +69,133 @@ export const Diary: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in pb-10">
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-3xl font-bold text-[var(--text)] drop-shadow-sm tracking-tight flex items-center">
-            <Sparkles className="h-6 w-6 text-[var(--brand)] mr-2" />
+          <h1 className="text-3xl font-semibold text-[var(--text)] tracking-tight flex items-center">
+            <Sparkles className="h-6 w-6 text-[var(--brand)] mr-3" />
             AI Carbon Diary
           </h1>
-          <p className="text-[var(--text-muted)] mt-1 tracking-tight">
+          <p className="text-[var(--text-muted)] mt-2 tracking-tight">
             Describe your day naturally. Our Hybrid AI will extract your footprint.
           </p>
         </div>
       </div>
 
       {error && (
-        <div className="bg-red-50 p-4 rounded-md flex items-center text-red-600 border border-red-100">
+        <div className="bg-rose-500/10 border border-rose-500/20 p-4 rounded-2xl flex items-center text-rose-400 font-medium text-sm">
           <AlertCircle className="mr-3 h-5 w-5 flex-shrink-0" />
-          <p className="text-sm">{error}</p>
+          <p>{error}</p>
         </div>
       )}
 
       {success && (
-        <div className="bg-emerald-50 p-4 rounded-md flex items-center text-emerald-700 border border-emerald-200">
+        <div className="bg-emerald-500/10 p-4 rounded-2xl flex items-center text-emerald-400 border border-emerald-500/20 font-medium text-sm">
           <CheckCircle2 className="mr-3 h-5 w-5 flex-shrink-0" />
-          <p className="text-sm font-medium">{success}</p>
+          <p>{success}</p>
         </div>
       )}
 
-      <LiquidCard className="overflow-hidden">
-        <div className="p-6">
-          <label className="block text-sm font-semibold text-[var(--text)] mb-2 tracking-tight">
-            How was your day?
-          </label>
-          <textarea
-            rows={5}
-            placeholder="e.g., Today I drove 15 km to college, ate a chicken biryani for lunch, used about 5 kWh of electricity, and bought a T-shirt."
-            className="block w-full rounded-[24px] shadow-inner sm:text-sm p-4 resize-none bg-[var(--surface-strong)] text-[var(--text)] border border-[var(--border)] outline-none ring-0 focus:ring-2 focus:ring-[var(--brand)] placeholder:text-[var(--text-muted)] transition-all duration-300"
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            disabled={loading || saving}
-          />
-          <div className="mt-4 flex justify-end">
-            <LiquidButton
-              onClick={handleExtract}
-              disabled={loading || !text.trim()}
-              gradient={true}
-            >
-              {loading ? (
-                <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                  Analyzing...
-                </>
-              ) : (
-                <>
-                  <Bot className="h-4 w-4 mr-2" />
-                  Extract Footprint
-                </>
-              )}
-            </LiquidButton>
-          </div>
+      <LiquidCard className="p-6 sm:p-8">
+        <label className="block text-[13px] font-medium text-[var(--text-muted)] mb-3 ml-1 tracking-tight">
+          How was your day?
+        </label>
+        <textarea
+          rows={5}
+          placeholder="e.g., Today I drove 15 km to college, ate a chicken biryani for lunch, used about 5 kWh of electricity, and bought a T-shirt."
+          className="glass-input w-full p-4 resize-none rounded-2xl text-[15px] leading-relaxed"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          disabled={loading || saving}
+        />
+        <div className="mt-6 flex justify-end">
+          <LiquidButton
+            onClick={handleExtract}
+            variant="primary"
+            disabled={loading || !text.trim()}
+            className="px-6"
+          >
+            {loading ? (
+              <>
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <Bot className="h-[18px] w-[18px] mr-2" />
+                Extract Footprint
+              </>
+            )}
+          </LiquidButton>
         </div>
       </LiquidCard>
 
       {previewData && previewData.activities.length > 0 && (
-        <LiquidCard className="overflow-hidden animate-in slide-in-from-bottom-4 duration-500">
-          <div className="p-4 border-b border-[var(--border)] flex items-center justify-between">
-            <h3 className="text-lg font-bold text-[var(--text)] tracking-tight">Extracted Activities</h3>
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[var(--surface-strong)] text-[var(--brand)] border border-[var(--border-light)] shadow-sm">
+        <div className="animate-slide-up mt-8 space-y-6">
+          <div className="flex items-center justify-between px-2">
+            <h3 className="text-xl font-semibold text-[var(--text)] tracking-tight">Extracted Activities</h3>
+            <span className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-semibold uppercase tracking-wider bg-white/[0.05] text-[var(--brand)] border border-white/[0.1]">
               {previewData.extraction_method === 'gemini' ? 'Gemini AI' : 'Rule Engine'}
             </span>
           </div>
           
-          <div className="p-4 space-y-3">
+          <div className="space-y-3">
             {previewData.activities.map((item: any, idx: number) => (
-              <div key={idx} className="bg-[var(--surface-strong)] p-4 rounded-[24px] shadow-sm border border-[var(--border)] flex items-start justify-between group hover:border-[var(--border-light)] transition-all duration-300">
-                <div>
-                  <div className="flex items-center">
-                    <span className="font-semibold text-[var(--text)] capitalize tracking-tight">{item.activity.activity_type}</span>
-                    <span className="mx-2 text-[var(--border)]">•</span>
-                    <span className="text-sm font-medium text-[var(--text-muted)]">{item.activity.quantity} {item.activity.unit}</span>
+              <LiquidCard key={idx} className="p-5 flex flex-col sm:flex-row sm:items-center justify-between group">
+                <div className="mb-4 sm:mb-0">
+                  <div className="flex items-center gap-3">
+                    <span className="font-medium text-[var(--text)] capitalize tracking-tight">{item.activity.activity_type}</span>
+                    <span className="w-1 h-1 rounded-full bg-white/[0.2]"></span>
+                    <span className="text-[13px] font-medium text-[var(--text-muted)]">{item.activity.quantity} {item.activity.unit}</span>
                   </div>
-                  <p className="text-xs text-[var(--text-muted)] mt-1 capitalize font-medium">Category: {item.activity.category}</p>
+                  <p className="text-[11px] text-[var(--text-muted)] mt-1.5 capitalize font-medium uppercase tracking-wider">{item.activity.category}</p>
                 </div>
-                <div className="flex items-center space-x-4">
-                  <div className="text-right">
-                    <span className="block font-bold text-rose-500">{item.carbon_emission.toFixed(2)} kg CO₂</span>
-                    <span className="block text-[10px] text-[var(--text-muted)] font-medium">{item.calculation_explanation}</span>
+                <div className="flex items-center justify-between sm:justify-end gap-6 w-full sm:w-auto border-t border-white/[0.05] sm:border-0 pt-4 sm:pt-0 mt-4 sm:mt-0">
+                  <div className="text-left sm:text-right">
+                    <span className="block font-semibold text-rose-400">{item.carbon_emission.toFixed(2)} kg CO₂</span>
+                    <span className="block text-[11px] text-[var(--text-muted)] mt-1 max-w-[200px] truncate" title={item.calculation_explanation}>
+                      {item.calculation_explanation}
+                    </span>
                   </div>
                   <button 
                     onClick={() => removeActivityFromPreview(idx)}
-                    className="text-[var(--text-muted)] hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="w-8 h-8 rounded-lg flex items-center justify-center text-[var(--text-muted)] hover:bg-rose-500/10 hover:text-rose-400 transition-all sm:opacity-0 sm:group-hover:opacity-100 shrink-0"
                     title="Remove item"
                   >
-                    <X className="h-5 w-5" />
+                    <X className="h-4 w-4" />
                   </button>
                 </div>
-              </div>
+              </LiquidCard>
             ))}
           </div>
 
-          <div className="p-4 bg-[var(--surface-strong)] border-t border-[var(--border)] flex items-center justify-between">
+          <LiquidCard className="p-6 mt-6 bg-gradient-to-r from-emerald-500/5 to-transparent border-emerald-500/10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div>
-              <p className="text-sm font-semibold text-[var(--text-muted)]">Total estimated impact</p>
-              <p className="text-xl font-black text-rose-500">{previewData.total_carbon_emission} kg CO₂</p>
+              <p className="text-[13px] font-medium text-[var(--text-muted)] mb-1">Total estimated impact</p>
+              <p className="text-3xl font-semibold text-rose-400 tracking-tight">{previewData.total_carbon_emission} <span className="text-[15px] font-medium opacity-80">kg CO₂</span></p>
             </div>
             <LiquidButton
               onClick={handleConfirm}
+              variant="primary"
               disabled={saving || previewData.activities.length === 0}
-              gradient={true}
+              className="w-full sm:w-auto px-8"
             >
               {saving ? 'Saving...' : 'Confirm & Save'}
-              {!saving && <ArrowRight className="ml-2 h-4 w-4" />}
+              {!saving && <ArrowRight className="ml-2 h-4 w-4 opacity-70" />}
             </LiquidButton>
-          </div>
-        </LiquidCard>
+          </LiquidCard>
+        </div>
       )}
       
       {previewData && previewData.activities.length === 0 && (
-        <div className="bg-amber-50 p-6 rounded-xl border border-amber-100 text-center text-amber-800">
-          We couldn't extract any valid carbon-emitting activities from your entry. Try being more specific about transport, food, or electricity usage.
-        </div>
+        <LiquidCard className="p-8 mt-8 border-amber-500/20 bg-amber-500/5 text-center flex flex-col items-center">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center mb-4">
+            <Bot className="h-6 w-6 text-amber-400" />
+          </div>
+          <p className="text-amber-400/90 font-medium text-[15px] max-w-md">
+            We couldn't extract any valid carbon-emitting activities from your entry. Try being more specific about transport, food, or electricity usage.
+          </p>
+        </LiquidCard>
       )}
     </div>
   );

@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import func, case, extract, text, and_
+from sqlalchemy import func, case, extract, text, and_, String
 from datetime import datetime, timedelta, timezone
 from uuid import UUID
 from typing import Dict, Any, List
@@ -7,7 +7,7 @@ from sqlalchemy.sql import expression
 from sqlalchemy.ext.compiler import compiles
 
 class date_trunc(expression.FunctionElement):
-    type = expression.FunctionElement
+    type = String()
     name = 'date_trunc'
     inherit_cache = True
 
@@ -177,7 +177,18 @@ def get_dashboard_trends(db: Session, user_id: UUID) -> DashboardTrends:
     ).filter(Activity.user_id == user_id, Activity.activity_date >= twelve_months_ago).group_by('month').order_by('month').all()
 
     def format_trends(res, date_fmt):
-        return [TrendDataPoint(period=r[0].strftime(date_fmt) if r[0] else "", emissions=round(r[1], 2)) for r in res]
+        result = []
+        for r in res:
+            if not r[0]:
+                period = ""
+            elif isinstance(r[0], str):
+                # SQLite returns a string from strftime directly
+                period = r[0]
+            else:
+                # PostgreSQL returns a datetime object from DATE_TRUNC
+                period = r[0].strftime(date_fmt)
+            result.append(TrendDataPoint(period=period, emissions=round(r[1], 2)))
+        return result
 
     return DashboardTrends(
         daily=format_trends(daily_res, "%Y-%m-%d"),
